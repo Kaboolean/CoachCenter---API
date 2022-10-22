@@ -1,6 +1,7 @@
 ﻿using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore;
-using Dhoojol.Infrastructure.EfCore.Repositories;
+using Dhoojol.Infrastructure.EfCore.Repositories.Base;
+using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Dhoojol.Infrastructure.Seeds;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,7 @@ public static class InfrastructureIocExtensions
     {
         services.AddEfCore(configuration);
 
-        services.AddScoped<IRepository<User>, EfRepository<User>>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<UserSeeder>();
 
         return services;

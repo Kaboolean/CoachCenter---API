@@ -1,6 +1,7 @@
 ﻿using Dhoojol.Application.Models.Users;
 using Dhoojol.Domain.Entities.Users;
-using Dhoojol.Infrastructure.EfCore.Repositories;
+using Dhoojol.Infrastructure.EfCore.Repositories.Base;
+using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Dhoojol.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +12,9 @@ namespace Dhoojol.Api.Controllers;
 [Route("users")]
 public class UsersController : Controller
 {
-    private readonly IRepository<User> _userRepository;
+    private readonly IUserRepository _userRepository;
 
-    public UsersController(IRepository<User> userRepository)
+    public UsersController(IUserRepository userRepository)
     {
         _userRepository = userRepository;
     }
@@ -47,6 +48,23 @@ public class UsersController : Controller
         await _userRepository.CreateAsync(user);
 
         return Ok(new { Id = user.Id });
+    }
+
+    [HttpGet("never-logged")]
+    public async Task<IActionResult> GetNeverLoggedUsersAsync()
+    {
+        var users = await _userRepository.GetNeverLoggedAsync();
+
+        var results = users
+            .Select(e => new ListUserNeverLoggedModel
+            {
+                Id = e.Id,
+                UserName = e.UserName,
+                Email = e.Email,
+                LastLoginDate = e.LastLoginDate
+            });
+
+        return Ok(results);
     }
 
     [HttpGet]

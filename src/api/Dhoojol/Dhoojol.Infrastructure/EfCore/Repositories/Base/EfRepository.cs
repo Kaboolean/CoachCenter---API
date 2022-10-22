@@ -2,7 +2,7 @@
 using Dhoojol.Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dhoojol.Infrastructure.EfCore.Repositories;
+namespace Dhoojol.Infrastructure.EfCore.Repositories.Base;
 
 public interface IRepository<TEntity> where TEntity : Entity
 {

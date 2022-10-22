@@ -1,7 +1,7 @@
 ﻿using Dhoojol.Application.Models.Auth;
 using Dhoojol.Application.Models.Users;
 using Dhoojol.Domain.Entities.Users;
-using Dhoojol.Infrastructure.EfCore.Repositories;
+using Dhoojol.Infrastructure.EfCore.Repositories.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
