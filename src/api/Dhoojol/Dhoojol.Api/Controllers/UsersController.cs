@@ -1,4 +1,6 @@
-﻿using Dhoojol.Application.Models.Users;
+﻿using Dhoojol.Api.Helpers;
+using Dhoojol.Application.Models.Users;
+using Dhoojol.Application.Services.Users;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Base;
 using Dhoojol.Infrastructure.EfCore.Repositories.Users;
@@ -13,41 +15,26 @@ namespace Dhoojol.Api.Controllers;
 public class UsersController : Controller
 {
     private readonly IUserRepository _userRepository;
+    private readonly IUsersService _userService;
 
-    public UsersController(IUserRepository userRepository)
+    public UsersController(IUserRepository userRepository, IUsersService userService)
     {
         _userRepository = userRepository;
+        _userService = userService;
     }
-
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] CreateUserModel model)
+    public async Task<ActionResult<ServiceResponse<Guid>>> CreateAsync([FromBody] CreateUserModel model)
     {
-        bool userNameExists = await _userRepository.AsQueryable()
-            .AnyAsync(e => e.UserName.ToLower() == model.UserName.ToLower());
-
-        if (userNameExists)
+        try
         {
-            return BadRequest(new { Message = $"The username {model.UserName} already exists." });
+            var userId = await _userService.CreateAsync(model);
+            return Ok(ServiceResponse.Success(userId));
         }
-
-        if (model.Password.Length < 3)
+        catch (Exception ex)
         {
-            return BadRequest(new { Message = $"The password must have 3 characters minimum." });
+            return BadRequest(ServiceResponse.Failed(ex.Message));
         }
-
-        var user = new User
-        {
-            UserName = model.UserName,
-            Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            BirthDate = model.BirthDate,
-            Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
-        };
-
-        await _userRepository.CreateAsync(user);
-
-        return Ok(new { Id = user.Id });
+        
     }
 
     [HttpGet("never-logged")]

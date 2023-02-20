@@ -19,9 +19,7 @@
     <Folder Include="Behaviors\" />
     <Folder Include="Commands\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Extensions\" />
     <Folder Include="SeedWork\" />
-    <Folder Include="Services\" />
     <Folder Include="Queries\" />
   </ItemGroup>
 

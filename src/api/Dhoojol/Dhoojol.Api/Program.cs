@@ -1,3 +1,4 @@
+using Dhoojol.Application.Extensions;
 using Dhoojol.Infrastructure.Extensions;
 using System.Reflection;
 
@@ -18,6 +19,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddInfrastructureImplementations(configuration);
+builder.Services.AddApplicationImplementations(configuration);
 
 var app = builder.Build();
 

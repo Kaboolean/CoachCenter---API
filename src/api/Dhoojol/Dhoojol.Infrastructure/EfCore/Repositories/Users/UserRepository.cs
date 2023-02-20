@@ -9,7 +9,7 @@ public interface IUserRepository : IRepository<User>
     Task<List<User>> GetNeverLoggedAsync(CancellationToken token = default);
 }
 
-public class UserRepository : EfRepository<User>, IUserRepository
+internal class UserRepository : EfRepository<User>, IUserRepository
 {
     private readonly DhoojolContext _dbContext;
 

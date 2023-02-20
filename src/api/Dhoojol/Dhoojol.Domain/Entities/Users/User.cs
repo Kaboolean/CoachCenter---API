@@ -9,7 +9,7 @@ public class User : Entity
     public DateTime? LastLoginDate { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
-    public DateTime BirthDate { get; set; }
+    public DateTime? BirthDate { get; set; }
     public string Password { get; set; } = null!;
     public string? CompanyName { get; set; }
 }

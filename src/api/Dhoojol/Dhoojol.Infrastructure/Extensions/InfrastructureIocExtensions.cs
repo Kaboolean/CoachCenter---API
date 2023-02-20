@@ -1,5 +1,4 @@
-﻿using Dhoojol.Domain.Entities.Users;
-using Dhoojol.Infrastructure.EfCore;
+﻿using Dhoojol.Infrastructure.EfCore;
 using Dhoojol.Infrastructure.EfCore.Repositories.Base;
 using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Dhoojol.Infrastructure.Seeds;

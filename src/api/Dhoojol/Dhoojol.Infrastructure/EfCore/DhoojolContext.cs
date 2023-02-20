@@ -1,5 +1,6 @@
-﻿using Dhoojol.Domain.Entities.Users;
-using Dhoojol.Domain.Entities.Products;
+﻿
+using Dhoojol.Domain.Entities.Coaches;
+using Dhoojol.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dhoojol.Infrastructure.EfCore;
@@ -16,7 +17,6 @@ public class DhoojolContext : DbContext
 
     //Allow CRUD operations
     public DbSet<User> Users { get; set; }
-    public DbSet<Product> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
