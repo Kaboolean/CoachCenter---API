@@ -26,8 +26,8 @@ public class UserSeeder : ISeedDb
         {
             var users = new List<User>
             {
-                new User { UserName = "ajoly", BirthDate = new DateTime(1993, 12, 19), Email = "joly.alexandre@hotmail.Fr", FirstName = "Alexandre", LastName = "Joly", Password = BCrypt.Net.BCrypt.HashPassword("123") },
-                new User { UserName = "ddhooghe", BirthDate = new DateTime(1993, 6, 8), Email = "ddhooghe@gmail.com", FirstName = "David", LastName = "D'hooghe", Password = BCrypt.Net.BCrypt.HashPassword("123") },
+                new User { UserName = "ajoly", BirthDate = new DateTime(1993, 12, 19), Email = "joly.alexandre@hotmail.Fr", FirstName = "Alexandre", LastName = "Joly", Password = BCrypt.Net.BCrypt.HashPassword("123"), UserType = "coach" },
+                new User { UserName = "ddhooghe", BirthDate = new DateTime(1993, 6, 8), Email = "ddhooghe@gmail.com", FirstName = "David", LastName = "D'hooghe", Password = BCrypt.Net.BCrypt.HashPassword("123"), UserType = "coach" },
             };
 
             await _dbContext.AddRangeAsync(users);

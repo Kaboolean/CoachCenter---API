@@ -1,4 +1,5 @@
 ﻿using Dhoojol.Infrastructure.EfCore;
+using Dhoojol.Infrastructure.EfCore.Repositories.Auth;
 using Dhoojol.Infrastructure.EfCore.Repositories.Base;
 using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Dhoojol.Infrastructure.Seeds;
@@ -17,6 +18,7 @@ public static class InfrastructureIocExtensions
         services.AddEfCore(configuration);
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddScoped<UserSeeder>();
 
         return services;

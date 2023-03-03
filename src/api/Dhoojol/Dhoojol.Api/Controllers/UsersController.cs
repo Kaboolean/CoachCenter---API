@@ -1,5 +1,7 @@
 ﻿using Dhoojol.Api.Helpers;
+using Dhoojol.Application.Models.Auth;
 using Dhoojol.Application.Models.Users;
+using Dhoojol.Application.Services.Auth;
 using Dhoojol.Application.Services.Users;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Base;
@@ -23,12 +25,12 @@ public class UsersController : Controller
         _userService = userService;
     }
     [HttpPost]
-    public async Task<ActionResult<ServiceResponse<Guid>>> CreateAsync([FromBody] CreateUserModel model)
+    public async Task<ActionResult<ServiceResponse<TokenResult>>> CreateAsync([FromBody] CreateUserModel model)
     {
         try
         {
-            var userId = await _userService.CreateAsync(model);
-            return Ok(ServiceResponse.Success(userId));
+            var token = await _userService.CreateAsync(model);
+            return Ok(ServiceResponse.Success(token));
         }
         catch (Exception ex)
         {
@@ -55,36 +57,10 @@ public class UsersController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync([FromQuery] ListUserQueryParameters queryParameters)
+    public async Task<ActionResult<List<ListUserModel>>> GetAllAsync([FromQuery] ListUserQueryParameters queryParameters)
     {
-        var query = _userRepository.AsQueryable()
-            .Select(e => new ListUserModel
-            {
-                Id = e.Id,
-                UserName = e.UserName,
-                Email = e.Email,
-                LastLoginDate = e.LastLoginDate,
-                FirstName = e.FirstName,
-                LastName = e.LastName,
-                BirthDate = e.BirthDate,
-            });
-
-        if (!string.IsNullOrEmpty(queryParameters.UserName))
-        {
-            query = query.Where(e => e.UserName.StartsWith(queryParameters.UserName));
-        }
-
-        if (!string.IsNullOrEmpty(queryParameters.Search))
-        {
-            query = query.Where(e => 
-                e.UserName.Contains(queryParameters.Search) ||
-                e.FirstName.Contains(queryParameters.Search) ||
-                e.LastName.Contains(queryParameters.Search));
-        }
-
-        var users = await query.ToListAsync();
-
-        return Ok(users);
+        List<ListUserModel> mylist = await _userService.GetAllAsync(queryParameters);
+        return Ok(mylist);
     }
 
     [HttpGet("{id}")]

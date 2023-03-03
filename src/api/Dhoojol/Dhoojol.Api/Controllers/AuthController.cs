@@ -1,7 +1,11 @@
-﻿using Dhoojol.Application.Models.Auth;
+﻿using Dhoojol.Api.Helpers;
+using Dhoojol.Application.Models.Auth;
 using Dhoojol.Application.Models.Users;
+using Dhoojol.Application.Services.Auth;
+using Dhoojol.Application.Services.Users;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Base;
+using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,30 +15,24 @@ namespace Dhoojol.Api.Controllers;
 [Route("auth")]
 public class AuthController : Controller
 {
-    private readonly IRepository<User> _userRepository;
+    private readonly IAuthService _authService;
 
-    public AuthController(IRepository<User> userRepository)
+    public AuthController(IAuthService authService)
     {
-        _userRepository = userRepository;
+        _authService = authService;
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync([FromBody] LoginModel model)
+    public async Task<ActionResult<ServiceResponse<TokenResult>>> LoginAsync([FromBody] LoginModel model)
     {
-        var user = await _userRepository
-            .AsQueryable()
-            .FirstOrDefaultAsync(e => e.UserName.ToLower() == model.UserName.ToLower());
-
-        if (user is null)
+        try
         {
-            return BadRequest(new { Message = "The username or the password is invalid" });
+            var token = await _authService.LoginAsync(model);
+            return Ok(ServiceResponse.Success(token));
         }
-
-        if (!BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+        catch (Exception ex)
         {
-            return BadRequest(new { Message = "The username or the password is invalid" });
+            return BadRequest(ServiceResponse.Failed(ex.Message));
         }
-
-        return Ok();
     }
 }
