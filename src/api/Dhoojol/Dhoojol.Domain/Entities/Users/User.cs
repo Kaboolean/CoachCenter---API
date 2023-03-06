@@ -15,3 +15,5 @@ public class User : Entity
     public string UserType { get; set; } = null!;
 }
 
+
+

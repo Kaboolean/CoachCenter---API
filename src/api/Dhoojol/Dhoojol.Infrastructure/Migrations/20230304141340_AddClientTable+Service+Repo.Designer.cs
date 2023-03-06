@@ -4,6 +4,7 @@ using Dhoojol.Infrastructure.EfCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dhoojol.Infrastructure.Migrations
 {
     [DbContext(typeof(DhoojolContext))]
-    partial class DhoojolContextModelSnapshot : ModelSnapshot
+    [Migration("20230304141340_AddClientTable+Service+Repo")]
+    partial class AddClientTableServiceRepo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,7 +42,7 @@ namespace Dhoojol.Infrastructure.Migrations
                     b.Property<int?>("Height")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Weight")
@@ -99,9 +101,7 @@ namespace Dhoojol.Infrastructure.Migrations
                 {
                     b.HasOne("Dhoojol.Domain.Entities.Users.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

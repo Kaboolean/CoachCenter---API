@@ -12,5 +12,7 @@ namespace Dhoojol.Application.Services.Users
     {
         Task<Guid> CreateAsync(CreateUserModel model);
         Task<List<ListUserModel>> GetAllAsync(ListUserQueryParameters queryParameters);
+
+        Task DeleteAsync(Guid id);
     }
 }

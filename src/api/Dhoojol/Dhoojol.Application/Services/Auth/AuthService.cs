@@ -49,8 +49,7 @@ namespace Dhoojol.Application.Services.Auth
                 var token = CreateToken(User);
                 token.UserName = User.UserName;
                 token.UserId = User.Id;
-                token.Email = User.Email;
-
+                token.UserType = User.UserType;
                 return token;
             }
         }
@@ -74,7 +73,7 @@ namespace Dhoojol.Application.Services.Auth
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
+                Expires = DateTime.Now.AddSeconds(3600),
                 SigningCredentials = creds,
             };
 
@@ -84,7 +83,7 @@ namespace Dhoojol.Application.Services.Auth
             return new TokenResult()
             {
                 Token = tokenHandler.WriteToken(token),
-                ExpireDate = tokenDescriptor.Expires.Value,
+                ExpiresIn = 3600,
             };
         }
     }

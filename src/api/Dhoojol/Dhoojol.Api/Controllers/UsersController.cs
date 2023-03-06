@@ -98,8 +98,7 @@ public class UsersController : Controller
     {
         try
         {
-            await _userRepository.DeleteAsync(id);
-
+            await _userService.DeleteAsync(id);
             return Ok();
         }
         catch (EntityNotFoundException)

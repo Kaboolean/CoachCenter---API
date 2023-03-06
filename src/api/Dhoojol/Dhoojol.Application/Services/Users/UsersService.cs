@@ -1,6 +1,7 @@
 ﻿using Dhoojol.Application.Models.Auth;
 using Dhoojol.Application.Models.Users;
 using Dhoojol.Application.Services.Auth;
+using Dhoojol.Application.Services.Clients;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +16,11 @@ namespace Dhoojol.Application.Services.Users
     internal class UsersService : IUsersService
     {
         private readonly IUserRepository _userRepository;
-        public UsersService(IUserRepository userRepo)
+        private readonly IClientsService _clientsService;
+        public UsersService(IUserRepository userRepo, IClientsService clientsService)
         {
             _userRepository = userRepo;
+            _clientsService = clientsService;
         }
         public async Task<Guid> CreateAsync( CreateUserModel model)
         {
@@ -44,7 +47,10 @@ namespace Dhoojol.Application.Services.Users
                 };
 
                 await _userRepository.CreateAsync(user);
-
+                if(model.UserType.ToLower() == "client")
+                {
+                    await _clientsService.CreateAsync(user);
+                }
                 return user.Id;
             }
             else
@@ -81,6 +87,10 @@ namespace Dhoojol.Application.Services.Users
             var users = await query.ToListAsync();
 
             return users;
+        }
+        public async Task DeleteAsync(Guid id)
+        {
+            await _userRepository.DeleteAsync(id);
         }
     }
 
