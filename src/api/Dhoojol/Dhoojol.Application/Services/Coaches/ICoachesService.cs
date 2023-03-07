@@ -10,5 +10,6 @@ namespace Dhoojol.Application.Services.Coaches
     public interface ICoachesService
     {
         Task CreateAsync(User user);
+        Task DeleteCoachAsync(Guid id);
     }
 }

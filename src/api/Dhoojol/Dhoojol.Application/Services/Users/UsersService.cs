@@ -97,7 +97,16 @@ namespace Dhoojol.Application.Services.Users
         }
         public async Task DeleteAsync(Guid id)
         {
-            await _userRepository.DeleteAsync(id);
+            var userType = await _userRepository.GetUserTypeById(id);
+            if(userType == "client")
+            {
+                await _clientsService.DeleteClientAsync(id);
+            }
+            if (userType == "coach")
+            {
+                await _coachesService.DeleteCoachAsync(id);
+            }
+                await _userRepository.DeleteAsync(id);
         }
     }
 

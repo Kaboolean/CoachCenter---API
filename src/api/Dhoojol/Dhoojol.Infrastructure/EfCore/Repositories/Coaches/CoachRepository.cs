@@ -1,5 +1,4 @@
-﻿using Dhoojol.Domain.Entities.Clients;
-using Dhoojol.Domain.Entities.Coaches;
+﻿using Dhoojol.Domain.Entities.Coaches;
 using Dhoojol.Infrastructure.EfCore.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Dhoojol.Infrastructure.EfCore.Repositories.Coaches;
 
-public interface ICoachRepository
+public interface ICoachRepository : IRepository<Coach>
 {
-    Task<Coach> GetCoachByUserId(Guid id);
+    Task<Guid> GetCoachIdByUserId(Guid id);
 }
 
 internal class CoachRepository : EfRepository<Coach>, ICoachRepository
@@ -24,16 +23,13 @@ internal class CoachRepository : EfRepository<Coach>, ICoachRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Coach> GetCoachByUserId(Guid id)
+    public async Task<Guid> GetCoachIdByUserId(Guid userId)
     {
-        var query = await _dbContext.Coaches.AsQueryable().FirstOrDefaultAsync(c => c.User.Id == id);
-        if (query is not null)
+        var query = await _dbContext.Coaches.AsQueryable().FirstOrDefaultAsync(c => c.User.Id == userId);
+        if(query == null)
         {
-            return query;
+            return Guid.Empty;
         }
-        else
-        {
-            throw new Exception($"Coach not found");
-        }
+        return query.Id;
     }
 }

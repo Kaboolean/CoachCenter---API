@@ -12,5 +12,6 @@ namespace Dhoojol.Application.Services.Clients
     {
         Task CreateAsync(User user);
         Task<GetClientModel> GetClient(Guid id);
+        Task DeleteClientAsync(Guid userId);
     }
 }

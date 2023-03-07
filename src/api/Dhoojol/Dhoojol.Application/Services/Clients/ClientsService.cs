@@ -3,6 +3,8 @@ using Dhoojol.Domain.Entities.Clients;
 using Dhoojol.Domain.Entities.Coaches;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Clients;
+using Dhoojol.Infrastructure.EfCore.Repositories.Coaches;
+using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +37,13 @@ namespace Dhoojol.Application.Services.Clients
             var client = new Client { User = user };
             await _clientRepository.CreateAsync(client);
         }
-
+        public async Task DeleteClientAsync(Guid userId)
+        {
+            var clientId = await _clientRepository.GetClientIdByUserId(userId);
+            if (clientId != Guid.Empty)
+            {
+                await _clientRepository.DeleteAsync(clientId);
+            }
+        }
     }
 }
