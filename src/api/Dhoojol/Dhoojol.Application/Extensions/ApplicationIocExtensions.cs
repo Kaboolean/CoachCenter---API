@@ -1,5 +1,6 @@
 ﻿using Dhoojol.Application.Services.Auth;
 using Dhoojol.Application.Services.Clients;
+using Dhoojol.Application.Services.Coaches;
 using Dhoojol.Application.Services.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Dhoojol.Infrastructure.Seeds;
@@ -21,7 +22,8 @@ namespace Dhoojol.Application.Extensions
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IClientsService, ClientsService>();
-
+            services.AddScoped<ICoachesService, CoachesService>();
+            
             return services;
         }
     }

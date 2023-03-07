@@ -1,5 +1,6 @@
 ﻿using Dhoojol.Application.Models.Clients;
 using Dhoojol.Domain.Entities.Clients;
+using Dhoojol.Domain.Entities.Coaches;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Clients;
 using System;

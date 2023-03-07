@@ -1,4 +1,5 @@
 ﻿using Dhoojol.Domain.Entities.Base;
+using Dhoojol.Domain.Entities.Coaches;
 using Dhoojol.Domain.Entities.Users;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,6 @@ namespace Dhoojol.Domain.Entities.Clients
         public int? Weight { get; set; }
         public string? Handicap { get; set; }
         public User User { get; set; } = null!;
+        public Coach? Coach { get; set; }
     }
 }

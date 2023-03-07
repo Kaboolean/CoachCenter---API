@@ -1,5 +1,6 @@
 ﻿
 using Dhoojol.Domain.Entities.Clients;
+using Dhoojol.Domain.Entities.Coaches;
 using Dhoojol.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ public class DhoojolContext : DbContext
     //Allow CRUD operations
     public DbSet<User> Users { get; set; }
     public DbSet<Client> Clients { get; set; }
+    public DbSet<Coach> Coaches { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
