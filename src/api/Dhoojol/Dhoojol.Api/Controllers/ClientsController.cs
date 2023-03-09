@@ -23,7 +23,7 @@ public class ClientsController : Controller
     {
         try
         {
-            var client = await _clientsService.GetClient(id);
+            var client = await _clientsService.GetClientByUserId(id);
             return Ok(ServiceResponse.Success(client));
         }
         catch (Exception ex)

@@ -1,6 +1,5 @@
 ﻿using Dhoojol.Infrastructure.EfCore;
 using Dhoojol.Infrastructure.EfCore.Repositories.Auth;
-using Dhoojol.Infrastructure.EfCore.Repositories.Base;
 using Dhoojol.Infrastructure.EfCore.Repositories.Clients;
 using Dhoojol.Infrastructure.EfCore.Repositories.Coaches;
 using Dhoojol.Infrastructure.EfCore.Repositories.Users;

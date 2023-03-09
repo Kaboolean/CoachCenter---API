@@ -1,7 +1,8 @@
-﻿
+﻿using Dhoojol.Application.Models.Users;
+
 namespace Dhoojol.Application.Models.Clients
 {
-    public class GetClientModel
+    public class GetClientDetails : GetUserModel
     {
         public string? Goal { get; set; }
         public int? Age { get; set; }

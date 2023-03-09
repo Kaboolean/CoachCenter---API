@@ -1,15 +1,8 @@
 ﻿using Dhoojol.Application.Models.Clients;
 using Dhoojol.Domain.Entities.Clients;
-using Dhoojol.Domain.Entities.Coaches;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Clients;
-using Dhoojol.Infrastructure.EfCore.Repositories.Coaches;
-using Dhoojol.Infrastructure.EfCore.Repositories.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Dhoojol.Application.Services.Clients
 {
@@ -21,7 +14,7 @@ namespace Dhoojol.Application.Services.Clients
         {
             _clientRepository = clientRepository;
         }
-        public async Task<GetClientModel> GetClient(Guid id)
+        public async Task<GetClientModel> GetClientByUserId(Guid id)
         {
             var query = await _clientRepository.GetClientByUserId(id);
             var client = new GetClientModel { 
@@ -29,9 +22,11 @@ namespace Dhoojol.Application.Services.Clients
                 Age = query?.Age, 
                 Height = query?.Height,
                 Weight = query?.Weight, 
-                Handicap = query?.Handicap};
+                Handicap = query?.Handicap,
+            };
             return client;
         }
+
         public async Task CreateAsync(User user)
         {
             var client = new Client { User = user };

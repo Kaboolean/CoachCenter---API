@@ -1,14 +1,12 @@
 ﻿using Dhoojol.Api.Helpers;
 using Dhoojol.Application.Models.Auth;
+using Dhoojol.Application.Models.Clients;
+using Dhoojol.Application.Models.Coaches;
+using Dhoojol.Application.Models.Helpers;
 using Dhoojol.Application.Models.Users;
-using Dhoojol.Application.Services.Auth;
 using Dhoojol.Application.Services.Users;
-using Dhoojol.Domain.Entities.Users;
-using Dhoojol.Infrastructure.EfCore.Repositories.Base;
-using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Dhoojol.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dhoojol.Api.Controllers;
 
@@ -16,44 +14,11 @@ namespace Dhoojol.Api.Controllers;
 [Route("users")]
 public class UsersController : Controller
 {
-    private readonly IUserRepository _userRepository;
     private readonly IUsersService _userService;
 
-    public UsersController(IUserRepository userRepository, IUsersService userService)
+    public UsersController( IUsersService userService)
     {
-        _userRepository = userRepository;
         _userService = userService;
-    }
-    [HttpPost]
-    public async Task<ActionResult<ServiceResponse<TokenResult>>> CreateAsync([FromBody] CreateUserModel model)
-    {
-        try
-        {
-            var token = await _userService.CreateAsync(model);
-            return Ok(ServiceResponse.Success(token));
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ServiceResponse.Failed(ex.Message));
-        }
-        
-    }
-
-    [HttpGet("never-logged")]
-    public async Task<IActionResult> GetNeverLoggedUsersAsync()
-    {
-        var users = await _userRepository.GetNeverLoggedAsync();
-
-        var results = users
-            .Select(e => new ListUserNeverLoggedModel
-            {
-                Id = e.Id,
-                UserName = e.UserName,
-                Email = e.Email,
-                LastLoginDate = e.LastLoginDate
-            });
-
-        return Ok(results);
     }
 
     [HttpGet]
@@ -64,11 +29,11 @@ public class UsersController : Controller
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
+    public async Task<ActionResult<ServiceResponse<GetUserModel>>> GetUserById([FromRoute] Guid id)
     {
         try
         {
-            var user = await _userRepository.GetAsync(id);
+            var user = await _userService.GetUserById(id);
 
             var model = new GetUserModel
             {
@@ -90,6 +55,59 @@ public class UsersController : Controller
         catch (Exception ex)
         {
             return BadRequest(new { Message = ex.Message });
+        }
+    }
+
+    [HttpGet("details/{id}")]
+    public async Task<ActionResult> GetUserDetails([FromRoute] Guid id)
+    {
+        try
+        {
+            var user = await _userService.GetUserById(id);
+            if (user.UserType == "client")
+            {
+                var client = await _userService.GetClientDetails(id, user);
+                var userDetails = new ServiceResponse<WrapperUserDetails<GetClientDetails>>
+                {
+                    Data = client
+                };
+                return Ok(userDetails);
+            }
+            if (user.UserType == "coach")
+            {
+                var coach = await _userService.GetCoachDetails(id, user);
+                var coachDetails = new ServiceResponse<WrapperUserDetails<GetCoachDetails>>
+                {
+                    Data = coach
+                };
+                return Ok(coachDetails);
+            }
+            else { return BadRequest(); }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
+
+        [HttpGet("never-logged")]
+    public async Task<IActionResult> GetNeverLoggedUsersAsync()
+    {
+        var users = await _userService.GetNeverLoggedAsync();
+
+        return Ok(users);
+    }
+    [HttpPost]
+    public async Task<ActionResult<ServiceResponse<TokenResult>>> CreateAsync([FromBody] CreateUserModel model)
+    {
+        try
+        {
+            var token = await _userService.CreateAsync(model);
+            return Ok(ServiceResponse.Success(token));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ServiceResponse.Failed(ex.Message));
         }
     }
 

@@ -1,12 +1,6 @@
 ﻿using Dhoojol.Domain.Entities.Clients;
-using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dhoojol.Infrastructure.EfCore.Repositories.Clients;
 

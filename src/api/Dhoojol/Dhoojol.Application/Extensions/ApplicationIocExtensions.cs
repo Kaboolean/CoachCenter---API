@@ -2,15 +2,8 @@
 using Dhoojol.Application.Services.Clients;
 using Dhoojol.Application.Services.Coaches;
 using Dhoojol.Application.Services.Users;
-using Dhoojol.Infrastructure.EfCore.Repositories.Users;
-using Dhoojol.Infrastructure.Seeds;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dhoojol.Application.Extensions
 {

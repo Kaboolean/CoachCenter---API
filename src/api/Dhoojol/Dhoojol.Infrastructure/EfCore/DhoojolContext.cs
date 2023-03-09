@@ -1,5 +1,4 @@
-﻿
-using Dhoojol.Domain.Entities.Clients;
+﻿using Dhoojol.Domain.Entities.Clients;
 using Dhoojol.Domain.Entities.Coaches;
 using Dhoojol.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;

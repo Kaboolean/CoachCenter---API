@@ -3,11 +3,6 @@ using Dhoojol.Domain.Entities.Coaches;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dhoojol.Infrastructure.Seeds;
 
