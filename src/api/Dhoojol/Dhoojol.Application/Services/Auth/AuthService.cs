@@ -1,6 +1,7 @@
 ﻿using Dhoojol.Application.Models.Auth;
+using Dhoojol.Application.Services.Users;
 using Dhoojol.Domain.Entities.Users;
-using Dhoojol.Infrastructure.EfCore.Repositories.Auth;
+using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -12,19 +13,21 @@ namespace Dhoojol.Application.Services.Auth
 {
     internal class AuthService : IAuthService
     {
-        private readonly IAuthRepository _authRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IUsersService _userService;
         private readonly IConfiguration _configuration;
 
-        public AuthService(IAuthRepository authRepository, IConfiguration configuration)
+        public AuthService(IUserRepository userRepository, IConfiguration configuration, IUsersService userService)
         {
-            _authRepository = authRepository;
+            _userRepository = userRepository;
             _configuration = configuration;
+            _userService = userService;
         }
 
         public async Task<TokenResult> LoginAsync(LoginModel model)
         {
             
-            var user = await _authRepository
+            var user = await _userRepository
             .AsQueryable()
             .FirstOrDefaultAsync(e => e.UserName.ToLower() == model.UserName.ToLower());
 
@@ -40,11 +43,13 @@ namespace Dhoojol.Application.Services.Auth
             }
             else
             {
-                var User = await _authRepository.GetUserByUsername(model.UserName);
+                var User = await _userService.GetUserByUserName(model.UserName);
                 var token = CreateToken(User);
                 token.UserName = User.UserName;
                 token.UserId = User.Id;
                 token.UserType = User.UserType;
+
+                //await _authRepository.
                 return token;
             }
         }

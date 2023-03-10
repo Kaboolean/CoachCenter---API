@@ -2,12 +2,14 @@
 using Dhoojol.Application.Models.Coaches;
 using Dhoojol.Application.Models.Helpers;
 using Dhoojol.Application.Models.Users;
+using Dhoojol.Domain.Entities.Users;
 
 namespace Dhoojol.Application.Services.Users
 {
     public interface IUsersService
     {
         Task<GetUserModel> GetUserById(Guid id);
+        Task<User> GetUserByUserName(string userName);
         Task<GetClientModel> GetClientByUserId(Guid id);
         Task<GetCoachModel> GetCoachByUserId(Guid id);
         Task<WrapperUserDetails<GetClientDetails>> GetClientDetails(Guid id, GetUserModel user);
@@ -16,5 +18,6 @@ namespace Dhoojol.Application.Services.Users
         Task<List<ListUserNeverLoggedModel>> GetNeverLoggedAsync();
         Task<Guid> CreateAsync(CreateUserModel model);
         Task DeleteAsync(Guid id);
+        //Task UpdateLoginDate(User user);
     }
 }

@@ -23,9 +23,9 @@ public class UserSeeder : ISeedDb
         {
             var users = new List<User>
             {
-                new User { UserName = "CoachOne", BirthDate = new DateTime(1990, 1, 1), Email = "CoachOne@test.com", FirstName = "CoachOne", LastName = "AlphaCoach", Password = BCrypt.Net.BCrypt.HashPassword("123"), UserType = "coach" },
-                new User { UserName = "CoachTwo", BirthDate = new DateTime(1900, 1, 1), Email = "CoachTwo@test.com", FirstName = "CoachTwo", LastName = "BetaCoach", Password = BCrypt.Net.BCrypt.HashPassword("123"), UserType = "coach" },
-                new User { UserName = "ClientOne", BirthDate = new DateTime(1900, 1, 1), Email = "ClientOne@test.com", FirstName = "ClientOne", LastName = "AlphaClient", Password = BCrypt.Net.BCrypt.HashPassword("123"), UserType = "client" },
+                new User { UserName = "CoachOne", BirthDate = new DateTime(1990, 1, 1), Email = "CoachOne@test.com", FirstName = "CoachOne", LastName = "AlphaCoach", Password = BCrypt.Net.BCrypt.HashPassword("111111"), UserType = "coach" },
+                new User { UserName = "CoachTwo", BirthDate = new DateTime(1900, 1, 1), Email = "CoachTwo@test.com", FirstName = "CoachTwo", LastName = "BetaCoach", Password = BCrypt.Net.BCrypt.HashPassword("111111"), UserType = "coach" },
+                new User { UserName = "ClientOne", BirthDate = new DateTime(1900, 1, 1), Email = "ClientOne@test.com", FirstName = "ClientOne", LastName = "AlphaClient", Password = BCrypt.Net.BCrypt.HashPassword("111111"), UserType = "client" },
             };
 
             var clients = new List<Client>();

@@ -39,7 +39,19 @@ namespace Dhoojol.Application.Services.Users
                 UserType = query.UserType,
             };
             return user;
+        }
 
+        public async Task<User> GetUserByUserName(string userName)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserByUserName(userName);
+                return user;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async Task<GetClientModel> GetClientByUserId(Guid id)
         {

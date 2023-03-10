@@ -6,6 +6,7 @@ namespace Dhoojol.Infrastructure.EfCore.Repositories.Users;
 
 public interface IUserRepository : IRepository<User>
 {
+    Task<User> GetUserByUserName(string userName);
     Task<List<User>> GetNeverLoggedAsync(CancellationToken token = default);
     Task<string> GetUserTypeById(Guid id);
 }
@@ -19,6 +20,12 @@ internal class UserRepository : EfRepository<User>, IUserRepository
         _dbContext = dbContext;
     }
 
+    public async Task<User> GetUserByUserName(string userName)
+    {
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        if (user == null) throw new Exception("User not found with this username");
+        return user;
+    }
     public Task<List<User>> GetNeverLoggedAsync(CancellationToken token = default)
     {
         var query = _dbContext.Users
