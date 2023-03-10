@@ -27,15 +27,22 @@ public class UserSeeder : ISeedDb
                 new User { UserName = "CoachTwo", BirthDate = new DateTime(1900, 1, 1), Email = "CoachTwo@test.com", FirstName = "CoachTwo", LastName = "BetaCoach", Password = BCrypt.Net.BCrypt.HashPassword("123"), UserType = "coach" },
                 new User { UserName = "ClientOne", BirthDate = new DateTime(1900, 1, 1), Email = "ClientOne@test.com", FirstName = "ClientOne", LastName = "AlphaClient", Password = BCrypt.Net.BCrypt.HashPassword("123"), UserType = "client" },
             };
-            var coaches = new List<Coach>
+
+            var clients = new List<Client>();
+            var coaches = new List<Coach>();
+
+            foreach(User user in users)
             {
-                new Coach { User = users[0]},
-                new Coach { User = users[1]},
-            };
-            var clients = new List<Client>
-            {
-                new Client { User = users[2]},
-            };
+                if(user.UserType == "client")
+                {
+                    clients.Add(new Client { User = user});
+                }
+                if (user.UserType == "coach")
+                {
+                    coaches.Add(new Coach { User = user });
+                }
+            }
+
             await _dbContext.AddRangeAsync(users);
             await _dbContext.AddRangeAsync(coaches);
             await _dbContext.AddRangeAsync(clients);
