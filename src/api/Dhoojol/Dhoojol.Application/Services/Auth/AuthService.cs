@@ -49,7 +49,7 @@ namespace Dhoojol.Application.Services.Auth
                 token.UserId = User.Id;
                 token.UserType = User.UserType;
 
-                //await _authRepository.
+                _userRepository.UpdateLoginDate(User);
                 return token;
             }
         }
