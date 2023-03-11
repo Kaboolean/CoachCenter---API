@@ -33,20 +33,8 @@ public class UsersController : Controller
     {
         try
         {
-            var user = await _userService.GetUserById(id);
-
-            var model = new GetUserModel
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-                Email = user.Email,
-                LastLoginDate = user.LastLoginDate,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                BirthDate = user.BirthDate,
-            };
-
-            return Ok(model);
+            GetUserModel user = await _userService.GetUserById(id);
+            return Ok(user);
         }
         catch (EntityNotFoundException)
         {
@@ -90,7 +78,7 @@ public class UsersController : Controller
         }
     }
 
-        [HttpGet("never-logged")]
+    [HttpGet("never-logged")]
     public async Task<IActionResult> GetNeverLoggedUsersAsync()
     {
         var users = await _userService.GetNeverLoggedAsync();
@@ -98,16 +86,29 @@ public class UsersController : Controller
         return Ok(users);
     }
     [HttpPost]
-    public async Task<ActionResult<ServiceResponse<TokenResult>>> CreateAsync([FromBody] CreateUserModel model)
+    public async Task<ActionResult<ServiceResponse<Guid>>> CreateAsync([FromBody] CreateUserModel model)
     {
         try
         {
-            var token = await _userService.CreateAsync(model);
-            return Ok(ServiceResponse.Success(token));
+            Guid id = await _userService.CreateAsync(model);
+            return Ok(ServiceResponse.Success(id));
         }
         catch (Exception ex)
         {
             return BadRequest(ServiceResponse.Failed(ex.Message));
+        }
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateUser(GetUserModel model)
+    {
+        try
+        {
+            await _userService.UpdateUser(model);
+            return Ok();
+        }catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 

@@ -30,7 +30,7 @@ internal class UserRepository : EfRepository<User>, IUserRepository
     public async Task<string> GetUserTypeById(Guid id)
     {
         var query = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
-        return query!.UserType;
+        return query.UserType;
     }
     public Task<List<User>> GetNeverLoggedAsync(CancellationToken token = default)
     {

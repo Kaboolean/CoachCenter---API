@@ -11,7 +11,6 @@ public class User : Entity
     public string? LastName { get; set; }
     public DateTime? BirthDate { get; set; }
     public string Password { get; set; } = null!;
-    public string? CompanyName { get; set; }
     public string UserType { get; set; } = null!;
 }
 

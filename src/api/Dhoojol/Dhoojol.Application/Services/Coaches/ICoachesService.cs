@@ -7,6 +7,8 @@ namespace Dhoojol.Application.Services.Coaches
     {
         Task<GetCoachModel> GetCoachByUserId(Guid id);
         Task CreateAsync(User user);
+        Task UpdateCoach(GetCoachModelWithUserId model);
         Task DeleteCoachAsync(Guid id);
+        
     }
 }

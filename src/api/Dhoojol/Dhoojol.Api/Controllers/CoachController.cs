@@ -1,6 +1,8 @@
 ﻿using Dhoojol.Api.Helpers;
 using Dhoojol.Application.Models.Coaches;
+using Dhoojol.Application.Models.Users;
 using Dhoojol.Application.Services.Coaches;
+using Dhoojol.Application.Services.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dhoojol.Api.Controllers;
@@ -27,6 +29,21 @@ public class CoachesController : Controller
         catch (Exception ex)
         {
             return BadRequest(ServiceResponse.Failed(ex.Message));
+        }
+    }
+
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateCoach(GetCoachModelWithUserId model)
+    {
+        try
+        {
+            await _coachesService.UpdateCoach(model);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }

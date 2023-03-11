@@ -17,7 +17,7 @@ namespace Dhoojol.Application.Services.Users
         Task<List<ListUserModel>> GetAllAsync(ListUserQueryParameters queryParameters);
         Task<List<ListUserNeverLoggedModel>> GetNeverLoggedAsync();
         Task<Guid> CreateAsync(CreateUserModel model);
+        Task UpdateUser(GetUserModel model);
         Task DeleteAsync(Guid id);
-        //Task UpdateLoginDate(User user);
     }
 }

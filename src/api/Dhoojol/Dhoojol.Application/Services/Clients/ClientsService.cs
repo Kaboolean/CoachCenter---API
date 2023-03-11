@@ -1,7 +1,9 @@
 ﻿using Dhoojol.Application.Models.Clients;
+using Dhoojol.Application.Models.Coaches;
 using Dhoojol.Domain.Entities.Clients;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Clients;
+using Dhoojol.Infrastructure.EfCore.Repositories.Coaches;
 
 
 namespace Dhoojol.Application.Services.Clients
@@ -32,6 +34,16 @@ namespace Dhoojol.Application.Services.Clients
             var client = new Client { User = user };
             await _clientRepository.CreateAsync(client);
         }
+
+        public async Task UpdateClient(GetClientModelWithUserId model)
+        {
+            var client = await _clientRepository.GetClientByUserId(model.userId);
+            client.Goal = model.Goal;
+            client.Height = model.Height;
+            client.Weight = model.Weight;
+            await _clientRepository.UpdateAsync(client);
+        }
+
         public async Task DeleteClientAsync(Guid userId)
         {
             var clientId = await _clientRepository.GetClientIdByUserId(userId);

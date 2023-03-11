@@ -18,10 +18,9 @@ namespace Dhoojol.Application.Services.Coaches
             var query = await _coachRepository.GetCoachByUserId(id);
             var coach = new GetCoachModel
             {
-                CoachId = query.Id,
                 Grades =query.Grades,
                 Description=query.Description,
-                HourlyRate=query.HourlyRate
+                HourlyRate=query.HourlyRate,
             };
             return coach;
         }
@@ -30,6 +29,14 @@ namespace Dhoojol.Application.Services.Coaches
         {
             var coach = new Coach { User = user };
             await _coachRepository.CreateAsync(coach);
+        }
+        public async Task UpdateCoach(GetCoachModelWithUserId model)
+        {
+            var coach = await _coachRepository.GetCoachByUserId(model.userId);
+            coach.Grades = model.Grades;
+            coach.Description = model.Description;
+            coach.HourlyRate = model.HourlyRate;
+            await _coachRepository.UpdateAsync(coach);
         }
         public async Task DeleteCoachAsync(Guid userId)
         {
@@ -40,5 +47,6 @@ namespace Dhoojol.Application.Services.Coaches
             }
             
         }
+
     }
 }

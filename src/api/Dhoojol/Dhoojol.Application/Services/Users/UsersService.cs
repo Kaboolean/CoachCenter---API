@@ -212,7 +212,24 @@ namespace Dhoojol.Application.Services.Users
                 throw new Exception($"Wrong user type.");
             }
         }
-
+        public async Task UpdateUser(GetUserModel model)
+        {
+            try
+            {
+                var user = await _userRepository.GetAsync(model.Id);
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.LastLoginDate = model.LastLoginDate;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.BirthDate = model.BirthDate;
+                user.UserType = model.UserType;
+                await _userRepository.UpdateAsync(user);
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task DeleteAsync(Guid id)
         {
             var userType = await _userRepository.GetUserTypeById(id);
