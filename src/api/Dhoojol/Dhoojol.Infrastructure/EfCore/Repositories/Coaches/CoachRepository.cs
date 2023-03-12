@@ -1,4 +1,5 @@
 ﻿using Dhoojol.Domain.Entities.Coaches;
+using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 

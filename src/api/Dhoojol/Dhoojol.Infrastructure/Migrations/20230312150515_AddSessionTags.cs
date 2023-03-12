@@ -4,22 +4,23 @@
 
 namespace Dhoojol.Infrastructure.Migrations
 {
-    public partial class add_company_name : Migration
+    public partial class AddSessionTags : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "CompanyName",
-                table: "Users",
+                name: "Tags",
+                table: "Sessions",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: false,
+                defaultValue: "");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "CompanyName",
-                table: "Users");
+                name: "Tags",
+                table: "Sessions");
         }
     }
 }

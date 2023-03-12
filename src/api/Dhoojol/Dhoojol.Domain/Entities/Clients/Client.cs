@@ -1,5 +1,6 @@
 ﻿using Dhoojol.Domain.Entities.Base;
 using Dhoojol.Domain.Entities.Coaches;
+using Dhoojol.Domain.Entities.Sessions;
 using Dhoojol.Domain.Entities.Users;
 
 namespace Dhoojol.Domain.Entities.Clients
@@ -13,5 +14,6 @@ namespace Dhoojol.Domain.Entities.Clients
         public string? Handicap { get; set; }
         public User User { get; set; } = null!;
         public Coach? Coach { get; set; }
+        public List<SessionParticipant> Participations { get; set; } = new();
     }
 }

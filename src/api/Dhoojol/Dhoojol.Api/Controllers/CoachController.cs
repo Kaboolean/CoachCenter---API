@@ -19,22 +19,22 @@ public class CoachesController : Controller
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ServiceResponse<GetCoachModel>>> GetCoach(Guid id)
+    public async Task<ActionResult<ApiResult<GetCoachModel>>> GetCoach(Guid id)
     {
         try
         {
             var coach = await _coachesService.GetCoachByUserId(id);
-            return Ok(ServiceResponse.Success(coach));
+            return Ok(ApiResult.Success(coach));
         }
         catch (Exception ex)
         {
-            return BadRequest(ServiceResponse.Failed(ex.Message));
+            return BadRequest(ApiResult.Failed<GetCoachModel>(ex.Message));
         }
     }
 
 
     [HttpPut]
-    public async Task<IActionResult> UpdateCoach(GetCoachModelWithUserId model)
+    public async Task<IActionResult> UpdateCoach(UpdateCoachModel model)
     {
         try
         {

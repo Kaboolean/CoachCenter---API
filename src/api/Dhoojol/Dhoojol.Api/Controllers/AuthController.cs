@@ -17,16 +17,16 @@ public class AuthController : Controller
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<ServiceResponse<TokenResult>>> LoginAsync([FromBody] LoginModel model)
+    public async Task<ActionResult<ApiResult<TokenResult>>> LoginAsync([FromBody] LoginModel model)
     {
         try
         {
             var token = await _authService.LoginAsync(model);
-            return Ok(ServiceResponse.Success(token));
+            return Ok(ApiResult.Success(token));
         }
         catch (Exception ex)
         {
-            return BadRequest(ServiceResponse.Failed(ex.Message));
+            return BadRequest(ApiResult.Failed<TokenResult>(ex.Message));
         }
     }
 }

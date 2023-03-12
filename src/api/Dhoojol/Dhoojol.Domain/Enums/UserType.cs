@@ -1,9 +1,12 @@
 ﻿
+using Dhoojol.Domain.Entities.Coaches;
+
 namespace Dhoojol.Domain.Enums
 {
-    public enum UserType
+    public static class UserType
     {
-        Coach = 1,
-        Client = 2,
+        public const string Coach = "coach";
+        public const string Client = "client";
+        public const string Admin = "admin";
     }
 }

@@ -29,7 +29,7 @@ public class UsersController : Controller
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ServiceResponse<GetUserModel>>> GetUserById([FromRoute] Guid id)
+    public async Task<ActionResult<ApiResult<GetUserModel>>> GetUserById([FromRoute] Guid id)
     {
         try
         {
@@ -46,38 +46,6 @@ public class UsersController : Controller
         }
     }
 
-    [HttpGet("details/{id}")]
-    public async Task<ActionResult> GetUserDetails([FromRoute] Guid id)
-    {
-        try
-        {
-            var user = await _userService.GetUserById(id);
-            if (user.UserType == "client")
-            {
-                var client = await _userService.GetClientDetails(id, user);
-                var userDetails = new ServiceResponse<WrapperUserDetails<GetClientDetails>>
-                {
-                    Data = client
-                };
-                return Ok(userDetails);
-            }
-            if (user.UserType == "coach")
-            {
-                var coach = await _userService.GetCoachDetails(id, user);
-                var coachDetails = new ServiceResponse<WrapperUserDetails<GetCoachDetails>>
-                {
-                    Data = coach
-                };
-                return Ok(coachDetails);
-            }
-            else { return BadRequest(); }
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
-    }
-
     [HttpGet("never-logged")]
     public async Task<IActionResult> GetNeverLoggedUsersAsync()
     {
@@ -86,16 +54,16 @@ public class UsersController : Controller
         return Ok(users);
     }
     [HttpPost]
-    public async Task<ActionResult<ServiceResponse<Guid>>> CreateAsync([FromBody] CreateUserModel model)
+    public async Task<ActionResult<ApiResult<Guid>>> CreateAsync([FromBody] CreateUserModel model)
     {
         try
         {
             Guid id = await _userService.CreateAsync(model);
-            return Ok(ServiceResponse.Success(id));
+            return Ok(ApiResult.Success(id));
         }
         catch (Exception ex)
         {
-            return BadRequest(ServiceResponse.Failed(ex.Message));
+            return BadRequest(ApiResult.Failed<Guid>(ex.Message));
         }
     }
 

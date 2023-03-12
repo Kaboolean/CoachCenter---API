@@ -2,6 +2,7 @@
 using Dhoojol.Domain.Entities.Coaches;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Coaches;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dhoojol.Application.Services.Coaches
 {
@@ -15,13 +16,22 @@ namespace Dhoojol.Application.Services.Coaches
 
         public async Task<GetCoachModel> GetCoachByUserId(Guid id)
         {
-            var query = await _coachRepository.GetCoachByUserId(id);
-            var coach = new GetCoachModel
+            var query = _coachRepository.AsQueryable().Select(e => new GetCoachModel
             {
-                Grades =query.Grades,
-                Description=query.Description,
-                HourlyRate=query.HourlyRate,
-            };
+                Grades = e.Grades,
+                Description = e.Description,
+                HourlyRate = e.HourlyRate,
+                UserId = e.User.Id,
+                UserName = e.User.UserName,
+                Email = e.User.Email,
+                FirstName = e.User.FirstName,
+                LastName = e.User.LastName,
+            });
+            var coach = await query.FirstOrDefaultAsync(e => e.UserId == id);
+            if(coach == null)
+            {
+                throw new Exception("Coach not found");
+            }
             return coach;
         }
 
@@ -30,9 +40,9 @@ namespace Dhoojol.Application.Services.Coaches
             var coach = new Coach { User = user };
             await _coachRepository.CreateAsync(coach);
         }
-        public async Task UpdateCoach(GetCoachModelWithUserId model)
+        public async Task UpdateCoach(UpdateCoachModel model)
         {
-            var coach = await _coachRepository.GetCoachByUserId(model.userId);
+            var coach = await _coachRepository.GetCoachByUserId(model.UserId);
             coach.Grades = model.Grades;
             coach.Description = model.Description;
             coach.HourlyRate = model.HourlyRate;

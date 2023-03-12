@@ -21,20 +21,20 @@ public class ClientsController : Controller
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ServiceResponse<GetClientModel>>> GetClient(Guid id)
+    public async Task<ActionResult<ApiResult<GetClientModel>>> GetClient(Guid id)
     {
         try
         {
             var client = await _clientsService.GetClientByUserId(id);
-            return Ok(ServiceResponse.Success(client));
+            return Ok(ApiResult.Success(client));
         }
         catch (Exception ex)
         {
-            return BadRequest(ServiceResponse.Failed(ex.Message));
+            return BadRequest(ApiResult.Failed<GetClientModel>(ex.Message));
         }
     }
     [HttpPut]
-    public async Task<IActionResult> UpdateClient(GetClientModelWithUserId model)
+    public async Task<IActionResult> UpdateClient(UpdateClientModel model)
     {
         try
         {

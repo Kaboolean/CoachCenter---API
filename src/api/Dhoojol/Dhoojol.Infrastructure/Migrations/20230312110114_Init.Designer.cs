@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dhoojol.Infrastructure.Migrations
 {
     [DbContext(typeof(DhoojolContext))]
-    [Migration("20230307075909_AddCoach")]
-    partial class AddCoach
+    [Migration("20230312110114_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -85,6 +85,61 @@ namespace Dhoojol.Infrastructure.Migrations
                     b.ToTable("Coaches");
                 });
 
+            modelBuilder.Entity("Dhoojol.Domain.Entities.Sessions.Session", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CoachId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoachId");
+
+                    b.ToTable("Sessions");
+                });
+
+            modelBuilder.Entity("Dhoojol.Domain.Entities.Sessions.SessionParticipant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SessionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("SessionsParticipants");
+                });
+
             modelBuilder.Entity("Dhoojol.Domain.Entities.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -93,9 +148,6 @@ namespace Dhoojol.Infrastructure.Migrations
 
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -155,9 +207,49 @@ namespace Dhoojol.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Dhoojol.Domain.Entities.Sessions.Session", b =>
+                {
+                    b.HasOne("Dhoojol.Domain.Entities.Coaches.Coach", "Coach")
+                        .WithMany()
+                        .HasForeignKey("CoachId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coach");
+                });
+
+            modelBuilder.Entity("Dhoojol.Domain.Entities.Sessions.SessionParticipant", b =>
+                {
+                    b.HasOne("Dhoojol.Domain.Entities.Clients.Client", "Client")
+                        .WithMany("Participations")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Dhoojol.Domain.Entities.Sessions.Session", "Session")
+                        .WithMany("Participants")
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Session");
+                });
+
+            modelBuilder.Entity("Dhoojol.Domain.Entities.Clients.Client", b =>
+                {
+                    b.Navigation("Participations");
+                });
+
             modelBuilder.Entity("Dhoojol.Domain.Entities.Coaches.Coach", b =>
                 {
                     b.Navigation("Clients");
+                });
+
+            modelBuilder.Entity("Dhoojol.Domain.Entities.Sessions.Session", b =>
+                {
+                    b.Navigation("Participants");
                 });
 #pragma warning restore 612, 618
         }

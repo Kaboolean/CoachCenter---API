@@ -12,8 +12,6 @@ namespace Dhoojol.Application.Services.Users
         Task<User> GetUserByUserName(string userName);
         Task<GetClientModel> GetClientByUserId(Guid id);
         Task<GetCoachModel> GetCoachByUserId(Guid id);
-        Task<WrapperUserDetails<GetClientDetails>> GetClientDetails(Guid id, GetUserModel user);
-        Task<WrapperUserDetails<GetCoachDetails>> GetCoachDetails(Guid id, GetUserModel user);
         Task<List<ListUserModel>> GetAllAsync(ListUserQueryParameters queryParameters);
         Task<List<ListUserNeverLoggedModel>> GetNeverLoggedAsync();
         Task<Guid> CreateAsync(CreateUserModel model);
