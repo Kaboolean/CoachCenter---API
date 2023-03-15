@@ -162,13 +162,13 @@ namespace Dhoojol.Application.Services.Users
         }
         public async Task DeleteAsync(Guid id)
         {
-            var userType = await _userRepository.GetUserTypeById(id);
+            string userType = _authService.GetUserType();
             if (userType == UserType.Client)
             {
-
-                var client = await _clientsService.GetClientByUserId(id);
-                await _sessionsService.DeleteClientSessionParticipant(client.Id);
-                await _clientsService.DeleteClientAsync(client.Id);
+                Guid clientId = _authService.GetClientId();
+                
+                await _sessionsService.DeleteClientSessionParticipant(clientId);
+                await _clientsService.DeleteClientAsync(clientId);
                
             }
             if (userType == UserType.Coach)
@@ -188,5 +188,4 @@ namespace Dhoojol.Application.Services.Users
             await _userRepository.DeleteAsync(id);
         }
     }
-
 }
