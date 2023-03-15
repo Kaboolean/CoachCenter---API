@@ -6,5 +6,8 @@ namespace Dhoojol.Application.Services.Auth
     {
         Task<TokenResult> LoginAsync(LoginModel model);
         Guid GetUserId();
+        Guid GetCoachId();
+        Guid GetClientId();
+        string GetUserType();
     }
 }

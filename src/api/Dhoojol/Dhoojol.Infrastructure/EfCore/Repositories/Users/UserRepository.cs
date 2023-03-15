@@ -23,7 +23,7 @@ internal class UserRepository : EfRepository<User>, IUserRepository
 
     public async Task<User> GetUserByUserName(string userName)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        var user = await _dbContext.Users.Include(e=>e.Coach).Include(e => e.Client).FirstOrDefaultAsync(u => u.UserName == userName);
         if (user == null) throw new Exception("User not found with this username");
         return user;
     }

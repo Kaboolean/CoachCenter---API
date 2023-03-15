@@ -1,6 +1,9 @@
-﻿using Dhoojol.Application.Models.Auth;
+﻿using Dhoojol.Application.Consts;
+using Dhoojol.Application.Models.Auth;
+using Dhoojol.Application.Services.Coaches;
 using Dhoojol.Application.Services.Users;
 using Dhoojol.Domain.Entities.Users;
+using Dhoojol.Domain.Enums;
 using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -27,24 +30,40 @@ namespace Dhoojol.Application.Services.Auth
         }
         public Guid GetUserId()
         {
-            HttpContext context = _httpContextAccessor.HttpContext;
+            var claimValue = GetClaimValue(ClaimTypes.NameIdentifier);
+            return Guid.Parse(claimValue);
+        }
+        public Guid GetCoachId()
+        {
+            var claimValue = GetClaimValue(UserClaimsTypes.CoachId);
+            return Guid.Parse(claimValue);
+        }
+        public Guid GetClientId()
+        {
 
+            var claimValue = GetClaimValue(UserClaimsTypes.ClientId);
+            return Guid.Parse(claimValue);
+        }
+        public string GetUserType()
+        {
+            var claimValue = GetClaimValue(ClaimTypes.Role);
+            return claimValue;
+        }
+        private string GetClaimValue(string claimType)
+        {
+            HttpContext context = _httpContextAccessor.HttpContext;
             if (context?.User == null)
             {
                 throw new InvalidOperationException("User is not logged");
             }
 
-            var claim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-
-            return Guid.Parse(claim!.Value);
+            var claim = context.User.Claims.FirstOrDefault(c => c.Type == claimType);
+            return claim.Value;
         }
         public async Task<TokenResult> LoginAsync(LoginModel model)
         {
-            
-            var user = await _userRepository
-            .AsQueryable()
-            .FirstOrDefaultAsync(e => e.UserName.ToLower() == model.UserName.ToLower());
 
+            var user = await _userRepository.GetUserByUserName(model.UserName);
             if (user is null)
             {
                 throw new Exception($"The username or the password is invalid");
@@ -57,26 +76,36 @@ namespace Dhoojol.Application.Services.Auth
             }
             else
             {
-                var User = await _userRepository.GetUserByUserName(model.UserName);
-                var token = CreateToken(User);
-                token.UserName = User.UserName;
-                token.UserId = User.Id;
-                token.UserType = User.UserType;
 
-                _userRepository.UpdateLoginDate(User);
+                List<Claim> additionnalClaims = new List<Claim>();
+                if (user.UserType == UserType.Client)
+                {
+                    additionnalClaims.Add(new Claim(UserClaimsTypes.ClientId, user.Client!.Id.ToString()));
+                }
+                if (user.UserType == UserType.Coach)
+                {
+                    additionnalClaims.Add(new Claim(UserClaimsTypes.CoachId, user.Coach!.Id.ToString()));
+                }
+                var token = CreateToken(user, additionnalClaims);
+                token.UserName = user.UserName;
+                token.UserId = user.Id;
+                token.UserType = user.UserType;
+
+                _userRepository.UpdateLoginDate(user);
                 return token;
             }
         }
-        private TokenResult CreateToken(User user)
+        private TokenResult CreateToken(User user, List<Claim> additionnalClaims)
         {
             var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.UserName),
             new Claim(ClaimTypes.Role, user.UserType)
-
+            
         };
-
+            //additional claims
+            claims.AddRange(additionnalClaims);
             var appSettingsToken = _configuration.GetSection("Auth:Token").Value;
             if (appSettingsToken is null)
             {

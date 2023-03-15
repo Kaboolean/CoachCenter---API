@@ -2,6 +2,7 @@
 using Dhoojol.Application.Models.Coaches;
 using Dhoojol.Application.Models.Helpers;
 using Dhoojol.Application.Models.Users;
+using Dhoojol.Application.Services.Auth;
 using Dhoojol.Application.Services.Clients;
 using Dhoojol.Application.Services.Coaches;
 using Dhoojol.Application.Services.Sessions;
@@ -19,12 +20,14 @@ namespace Dhoojol.Application.Services.Users
         private readonly IClientsService _clientsService;
         private readonly ICoachesService _coachesService;
         private readonly ISessionsService _sessionsService;
-        public UsersService(IUserRepository userRepo, IClientsService clientsService, ICoachesService coachesService, ISessionsService sessionsService)
+        private readonly IAuthService _authService;
+        public UsersService(IUserRepository userRepo, IClientsService clientsService, ICoachesService coachesService, ISessionsService sessionsService, IAuthService authService)
         {
             _userRepository = userRepo;
             _clientsService = clientsService;
             _coachesService = coachesService;
             _sessionsService = sessionsService;
+            _authService = authService;
         }
 
         public async Task<GetUserModel> GetUserById(Guid id)
@@ -162,6 +165,7 @@ namespace Dhoojol.Application.Services.Users
             var userType = await _userRepository.GetUserTypeById(id);
             if (userType == UserType.Client)
             {
+
                 var client = await _clientsService.GetClientByUserId(id);
                 await _sessionsService.DeleteClientSessionParticipant(client.Id);
                 await _clientsService.DeleteClientAsync(client.Id);
@@ -169,8 +173,7 @@ namespace Dhoojol.Application.Services.Users
             }
             if (userType == UserType.Coach)
             {
-                var coach = await _coachesService.GetCoachByUserId(id);
-
+                Guid coachId = _authService.GetCoachId();
                 var sessionList = await _sessionsService.GetByCoachUserId(id);
                 if(sessionList is not null)
                 {
@@ -180,7 +183,7 @@ namespace Dhoojol.Application.Services.Users
                         await _sessionsService.DeleteSession(session.Id);
                     }
                 }
-                await _coachesService.DeleteCoachAsync(coach.Id);
+                await _coachesService.DeleteCoachAsync(coachId);
             }
             await _userRepository.DeleteAsync(id);
         }

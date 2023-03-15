@@ -36,6 +36,7 @@ public class DhoojolContext : DbContext
             v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
             v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null)));
 
+        modelBuilder.Entity<Coach>().HasOne(e => e.User).WithOne(e => e.Coach).HasForeignKey<Coach>();
     }
 }
 

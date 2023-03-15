@@ -7,7 +7,9 @@ namespace Dhoojol.Domain.Entities.Clients
 {
     public class Client : Entity
     {
+        public Guid UserId { get; set; }
         public string? Goal { get; set; }
+        
         public int? Age { get; set; }
         public int? Height { get; set; }
         public int? Weight { get; set; }
