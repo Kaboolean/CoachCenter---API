@@ -2,6 +2,7 @@
 using Dhoojol.Application.Services.Users;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Infrastructure.EfCore.Repositories.Users;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -14,16 +15,29 @@ namespace Dhoojol.Application.Services.Auth
     internal class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUsersService _userService;
         private readonly IConfiguration _configuration;
+        //accèder au context de l'http et récupérer le token
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(IUserRepository userRepository, IConfiguration configuration, IUsersService userService)
+        public AuthService(IUserRepository userRepository, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _configuration = configuration;
-            _userService = userService;
+            _httpContextAccessor = httpContextAccessor;
         }
+        public Guid GetUserId()
+        {
+            HttpContext context = _httpContextAccessor.HttpContext;
 
+            if (context?.User == null)
+            {
+                throw new InvalidOperationException("User is not logged");
+            }
+
+            var claim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            return Guid.Parse(claim!.Value);
+        }
         public async Task<TokenResult> LoginAsync(LoginModel model)
         {
             
@@ -43,7 +57,7 @@ namespace Dhoojol.Application.Services.Auth
             }
             else
             {
-                var User = await _userService.GetUserByUserName(model.UserName);
+                var User = await _userRepository.GetUserByUserName(model.UserName);
                 var token = CreateToken(User);
                 token.UserName = User.UserName;
                 token.UserId = User.Id;
@@ -58,10 +72,12 @@ namespace Dhoojol.Application.Services.Auth
             var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.UserName)
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Role, user.UserType)
+
         };
 
-            var appSettingsToken = _configuration.GetSection("AppSettings:Token").Value;
+            var appSettingsToken = _configuration.GetSection("Auth:Token").Value;
             if (appSettingsToken is null)
             {
                 throw new Exception("AppSettings Token is null !");
@@ -73,7 +89,7 @@ namespace Dhoojol.Application.Services.Auth
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddSeconds(3600),
+                Expires = DateTime.Now.AddSeconds(10800),
                 SigningCredentials = creds,
             };
 
@@ -83,7 +99,7 @@ namespace Dhoojol.Application.Services.Auth
             return new TokenResult()
             {
                 Token = tokenHandler.WriteToken(token),
-                ExpiresIn = 3600,
+                ExpiresIn = 10800,
             };
         }
     }

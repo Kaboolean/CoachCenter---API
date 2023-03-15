@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dhoojol.Infrastructure.Migrations
 {
     [DbContext(typeof(DhoojolContext))]
-    [Migration("20230312110114_Init")]
+    [Migration("20230313140837_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,6 +109,10 @@ namespace Dhoojol.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tags")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

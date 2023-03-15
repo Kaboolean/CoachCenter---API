@@ -18,7 +18,8 @@ namespace Dhoojol.Application.Extensions
             services.AddScoped<IClientsService, ClientsService>();
             services.AddScoped<ICoachesService, CoachesService>();
             services.AddScoped<ISessionsService, SessionsService>();
-            
+            services.AddHttpContextAccessor();
+
             return services;
         }
     }

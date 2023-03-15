@@ -3,6 +3,7 @@ namespace Dhoojol.Application.Models.Clients
 {
     public class GetClientModel
     {
+        public Guid Id { get; set; }
         public string? Goal { get; set; }
         public int? Age { get; set; }
         public int? Height { get; set; }

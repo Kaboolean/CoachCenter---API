@@ -18,6 +18,7 @@ namespace Dhoojol.Application.Services.Coaches
         {
             var query = _coachRepository.AsQueryable().Select(e => new GetCoachModel
             {
+                Id = e.Id,
                 Grades = e.Grades,
                 Description = e.Description,
                 HourlyRate = e.HourlyRate,
@@ -48,13 +49,9 @@ namespace Dhoojol.Application.Services.Coaches
             coach.HourlyRate = model.HourlyRate;
             await _coachRepository.UpdateAsync(coach);
         }
-        public async Task DeleteCoachAsync(Guid userId)
+        public async Task DeleteCoachAsync(Guid id)
         {
-            var coachId = await _coachRepository.GetCoachIdByUserId(userId);
-            if (coachId != Guid.Empty)
-            {
-                await _coachRepository.DeleteAsync(coachId);
-            }
+            await _coachRepository.DeleteAsync(id);
             
         }
 

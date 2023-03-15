@@ -4,6 +4,7 @@ using Dhoojol.Application.Models.Helpers;
 using Dhoojol.Application.Models.Users;
 using Dhoojol.Application.Services.Clients;
 using Dhoojol.Application.Services.Coaches;
+using Dhoojol.Application.Services.Sessions;
 using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Domain.Enums;
 using Dhoojol.Infrastructure.EfCore.Repositories.Users;
@@ -17,11 +18,13 @@ namespace Dhoojol.Application.Services.Users
         private readonly IUserRepository _userRepository;
         private readonly IClientsService _clientsService;
         private readonly ICoachesService _coachesService;
-        public UsersService(IUserRepository userRepo, IClientsService clientsService, ICoachesService coachesService)
+        private readonly ISessionsService _sessionsService;
+        public UsersService(IUserRepository userRepo, IClientsService clientsService, ICoachesService coachesService, ISessionsService sessionsService)
         {
             _userRepository = userRepo;
             _clientsService = clientsService;
-            _coachesService = coachesService; 
+            _coachesService = coachesService;
+            _sessionsService = sessionsService;
         }
 
         public async Task<GetUserModel> GetUserById(Guid id)
@@ -60,7 +63,7 @@ namespace Dhoojol.Application.Services.Users
 
         public async Task<List<ListUserModel>> GetAllAsync(ListUserQueryParameters queryParameters)
         {
-            var query = _userRepository.AsQueryable()
+            var query = _userRepository.AsQueryable().Where(e=>e.UserType == "coach" || e.UserType == "client")
                 .Select(e => new ListUserModel
                 {
                     Id = e.Id,
@@ -159,11 +162,25 @@ namespace Dhoojol.Application.Services.Users
             var userType = await _userRepository.GetUserTypeById(id);
             if (userType == UserType.Client)
             {
-                await _clientsService.DeleteClientAsync(id);
+                var client = await _clientsService.GetClientByUserId(id);
+                await _sessionsService.DeleteClientSessionParticipant(client.Id);
+                await _clientsService.DeleteClientAsync(client.Id);
+               
             }
             if (userType == UserType.Coach)
             {
-                await _coachesService.DeleteCoachAsync(id);
+                var coach = await _coachesService.GetCoachByUserId(id);
+
+                var sessionList = await _sessionsService.GetByCoachUserId(id);
+                if(sessionList is not null)
+                {
+                    foreach(var session in sessionList)
+                    {
+                        await _sessionsService.DeleteSessionParticipant(session.Id);
+                        await _sessionsService.DeleteSession(session.Id);
+                    }
+                }
+                await _coachesService.DeleteCoachAsync(coach.Id);
             }
             await _userRepository.DeleteAsync(id);
         }

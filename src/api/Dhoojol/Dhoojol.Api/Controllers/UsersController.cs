@@ -6,11 +6,13 @@ using Dhoojol.Application.Models.Helpers;
 using Dhoojol.Application.Models.Users;
 using Dhoojol.Application.Services.Users;
 using Dhoojol.Infrastructure.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dhoojol.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("users")]
 public class UsersController : Controller
 {
@@ -21,6 +23,7 @@ public class UsersController : Controller
         _userService = userService;
     }
 
+    [Authorize(Roles = "admin")]
     [HttpGet]
     public async Task<ActionResult<List<ListUserModel>>> GetAllAsync([FromQuery] ListUserQueryParameters queryParameters)
     {
@@ -53,6 +56,8 @@ public class UsersController : Controller
 
         return Ok(users);
     }
+
+    [AllowAnonymous]
     [HttpPost]
     public async Task<ActionResult<ApiResult<Guid>>> CreateAsync([FromBody] CreateUserModel model)
     {

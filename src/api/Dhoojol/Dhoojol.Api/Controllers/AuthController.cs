@@ -1,11 +1,14 @@
 ﻿using Dhoojol.Api.Helpers;
 using Dhoojol.Application.Models.Auth;
 using Dhoojol.Application.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dhoojol.Api.Controllers;
 
 [ApiController]
+//attribut d'auth basé sur les rôles [Authorize(Roles = "admin,client, coaches")]
+[Authorize]
 [Route("auth")]
 public class AuthController : Controller
 {
@@ -16,6 +19,7 @@ public class AuthController : Controller
         _authService = authService;
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult<ApiResult<TokenResult>>> LoginAsync([FromBody] LoginModel model)
     {

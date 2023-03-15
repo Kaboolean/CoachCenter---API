@@ -19,6 +19,7 @@ namespace Dhoojol.Application.Services.Clients
         {
             var query = _clientRepository.AsQueryable().Select(e=>
             new GetClientModel { 
+                Id = e.Id,
                 Goal = e.Goal, 
                 Age = e.Age, 
                 Height = e.Height,
@@ -50,16 +51,13 @@ namespace Dhoojol.Application.Services.Clients
             client.Goal = model.Goal;
             client.Height = model.Height;
             client.Weight = model.Weight;
+            client.Handicap = model.Handicap;
             await _clientRepository.UpdateAsync(client);
         }
 
-        public async Task DeleteClientAsync(Guid userId)
+        public async Task DeleteClientAsync(Guid id)
         {
-            var clientId = await _clientRepository.GetClientIdByUserId(userId);
-            if (clientId != Guid.Empty)
-            {
-                await _clientRepository.DeleteAsync(clientId);
-            }
+                await _clientRepository.DeleteAsync(id);
         }
     }
 }

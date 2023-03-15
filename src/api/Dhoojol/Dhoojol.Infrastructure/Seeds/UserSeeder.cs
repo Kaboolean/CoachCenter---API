@@ -5,6 +5,7 @@ using Dhoojol.Domain.Entities.Users;
 using Dhoojol.Domain.Enums;
 using Dhoojol.Infrastructure.EfCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Dhoojol.Infrastructure.Seeds;
 
@@ -19,21 +20,29 @@ public class UserSeeder : ISeedDb
 
     public async Task SeedAsync()
     {
-        bool any = await _dbContext.Users.AnyAsync();
+        bool anyAdmin = await _dbContext.Users.AnyAsync(e => e.UserType == "admin");
+            var admins = new List<User>
+            {
+                new User { UserName = "admin", BirthDate = new DateTime(1900, 1, 1), Email = "admin@test.com", FirstName = "admin", LastName = "admin", Password = BCrypt.Net.BCrypt.HashPassword("111111"), UserType = UserType.Admin },
+            };
+        if (!anyAdmin)
+        {
+            await _dbContext.AddRangeAsync(admins);
+        }
+
+        bool any = await _dbContext.Users.AnyAsync(e=> e.UserType == "coach" || e.UserType == "client");
         var users = new List<User>
             {
                 new User { UserName = "CoachOne", BirthDate = new DateTime(1990, 1, 1), Email = "CoachOne@test.com", FirstName = "Eric", LastName = "Dupont", Password = BCrypt.Net.BCrypt.HashPassword("111111"), UserType = UserType.Coach },
                 new User { UserName = "ClientOne", BirthDate = new DateTime(1900, 1, 1), Email = "ClientOne@test.com", FirstName = "Robert", LastName = "Durand", Password = BCrypt.Net.BCrypt.HashPassword("111111"), UserType = UserType.Client },
                 new User { UserName = "ClientTwo", BirthDate = new DateTime(1900, 1, 1), Email = "ClientTwo@test.com", FirstName = "Roger", LastName = "Richard", Password = BCrypt.Net.BCrypt.HashPassword("111111"), UserType = UserType.Client },
                 new User { UserName = "ClientThree", BirthDate = new DateTime(1900, 1, 1), Email = "ClientThree@test.com", FirstName = "Paul", LastName = "Martin", Password = BCrypt.Net.BCrypt.HashPassword("111111"), UserType = UserType.Client },
+                
             };
             var clients = new List<Client>();
             var coaches = new List<Coach>();
         if (!any)
         {
-            
-
-            
             int num = 1;
             foreach(User user in users)
             {
@@ -50,7 +59,7 @@ public class UserSeeder : ISeedDb
             }
             var sessions = new Session
             {
-                Name = "Renfo musculaire", Date = DateTime.Now, Location = "Lille, 2 Avenue du Maine", Duration=60, Description="Petite session de renfo haut de corps", Coach = coaches[0], Tags= new List<string>
+                Name = "Renfo musculaire", Date = DateTime.Now.AddDays(10), Location = "Lille, 2 Avenue du Maine", Duration=60, Description="Petite session de renfo haut de corps", Coach = coaches[0], Tags= new List<string>
                 {
                     "Musculation", "Débutant", "Basic-fit", "Intérieur", "Dos", "Bras"
                 }
@@ -69,9 +78,6 @@ public class UserSeeder : ISeedDb
 
             await _dbContext.SaveChangesAsync();
         }
-
-            
-
     }
 }
 

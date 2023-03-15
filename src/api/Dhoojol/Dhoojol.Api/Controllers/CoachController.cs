@@ -3,11 +3,13 @@ using Dhoojol.Application.Models.Coaches;
 using Dhoojol.Application.Models.Users;
 using Dhoojol.Application.Services.Coaches;
 using Dhoojol.Application.Services.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dhoojol.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("coaches")]
 public class CoachesController : Controller
 {

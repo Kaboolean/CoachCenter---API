@@ -5,11 +5,13 @@ using Dhoojol.Application.Models.Coaches;
 using Dhoojol.Application.Services.Auth;
 using Dhoojol.Application.Services.Clients;
 using Dhoojol.Application.Services.Coaches;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dhoojol.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("clients")]
 public class ClientsController : Controller
 {
