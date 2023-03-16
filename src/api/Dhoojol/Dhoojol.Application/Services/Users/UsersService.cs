@@ -50,8 +50,8 @@ namespace Dhoojol.Application.Services.Users
 
         public async Task<User> GetUserByUserName(string userName)
         {
-                var user = await _userRepository.GetUserByUserName(userName);
-                return user;
+            var user = await _userRepository.GetUserByUserName(userName);
+            return user;
         }
         public async Task<GetClientModel> GetClientByUserId(Guid id)
         {
@@ -66,7 +66,7 @@ namespace Dhoojol.Application.Services.Users
 
         public async Task<List<ListUserModel>> GetAllAsync(ListUserQueryParameters queryParameters)
         {
-            var query = _userRepository.AsQueryable().Where(e=>e.UserType == "coach" || e.UserType == "client")
+            var query = _userRepository.AsQueryable().Where(e => e.UserType == "coach" || e.UserType == "client")
                 .Select(e => new ListUserModel
                 {
                     Id = e.Id,
@@ -150,42 +150,45 @@ namespace Dhoojol.Application.Services.Users
         }
         public async Task UpdateUser(GetUserModel model)
         {
-                var user = await _userRepository.GetAsync(model.Id);
-                user.UserName = model.UserName;
-                user.Email = model.Email;
-                user.LastLoginDate = model.LastLoginDate;
-                user.FirstName = model.FirstName;
-                user.LastName = model.LastName;
-                user.BirthDate = model.BirthDate;
-                user.UserType = model.UserType;
-                await _userRepository.UpdateAsync(user);
+            var user = await _userRepository.GetAsync(model.Id);
+            user.UserName = model.UserName;
+            user.Email = model.Email;
+            user.LastLoginDate = model.LastLoginDate;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.BirthDate = model.BirthDate;
+            user.UserType = model.UserType;
+            await _userRepository.UpdateAsync(user);
         }
         public async Task DeleteAsync(Guid id)
         {
-            string userType = _authService.GetUserType();
-            if (userType == UserType.Client)
+            var user = await _userRepository.AsQueryable()
+                .Include(e => e.Coach)
+                .Include(e => e.Client)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+
+            if (user.UserType == UserType.Client)
             {
-                Guid clientId = _authService.GetClientId();
-                
-                await _sessionsService.DeleteClientSessionParticipant(clientId);
-                await _clientsService.DeleteClientAsync(clientId);
-               
+                await _sessionsService.DeleteClientSessionParticipant(user.Client.Id);
+                await _clientsService.DeleteClientAsync(user.Client.Id);
+
             }
-            if (userType == UserType.Coach)
+            if (user.UserType == UserType.Coach)
             {
-                Guid coachId = _authService.GetCoachId();
                 var sessionList = await _sessionsService.GetByCoachUserId(id);
-                if(sessionList is not null)
+                if (sessionList is not null)
                 {
-                    foreach(var session in sessionList)
+                    foreach (var session in sessionList)
                     {
                         await _sessionsService.DeleteSessionParticipant(session.Id);
                         await _sessionsService.DeleteSession(session.Id);
                     }
                 }
-                await _coachesService.DeleteCoachAsync(coachId);
+                await _coachesService.DeleteCoachAsync(user.Coach.Id);
             }
             await _userRepository.DeleteAsync(id);
         }
     }
+
 }

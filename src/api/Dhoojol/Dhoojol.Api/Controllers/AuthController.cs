@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dhoojol.Api.Controllers;
 
 [ApiController]
-//attribut d'auth basé sur les rôles [Authorize(Roles = "admin,client, coaches")]
 [Authorize]
 [Route("auth")]
 public class AuthController : Controller

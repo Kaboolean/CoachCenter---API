@@ -76,7 +76,7 @@ namespace Dhoojol.Application.Services.Sessions
                     Description = e.Coach.Description,
                     HourlyRate = e.Coach.HourlyRate
                 }
-            }) ;
+            });
             var session = await query.FirstOrDefaultAsync(e => e.Id == id);
             if (session == null)
             {
@@ -86,7 +86,7 @@ namespace Dhoojol.Application.Services.Sessions
         }
         public async Task<List<ListSessionModel>> GetByCoachUserId(Guid coachUserId)
         {
-            var query = _sessionRepository.AsQueryable().Where(e => e.Coach.User.Id == coachUserId).Select(e=> new ListSessionModel
+            var query = _sessionRepository.AsQueryable().Where(e => e.Coach.User.Id == coachUserId).Select(e => new ListSessionModel
             {
                 Id = e.Id,
                 Name = e.Name,
@@ -120,13 +120,14 @@ namespace Dhoojol.Application.Services.Sessions
         public async Task JoinSession(Guid sessionId)
         {
             var userId = _authService.GetUserId();
-            GetClientModel clientModel = await _clientsService.GetClientByUserId(userId);
-            bool query = _sessionParticipantRepository.AsQueryable().Where(e=>e.SessionId == sessionId).Any(e=>e.ClientId == clientModel.Id);
-                if (query)
+            var clientId = _authService.GetClientId();
+
+            bool alreadyJoined = _sessionParticipantRepository.AsQueryable().Where(e => e.SessionId == sessionId).Any(e => e.ClientId == clientId);
+            if (alreadyJoined)
             {
                 return;
             }
-            Client client = await _clientRepository.GetAsync(clientModel.Id);
+            Client client = await _clientRepository.GetAsync(clientId);
             Session session = await _sessionRepository.GetAsync(sessionId);
             SessionParticipant sessionParticipant = new SessionParticipant { Client = client, Session = session, ClientId = client.Id, SessionId = session.Id };
             await _sessionParticipantRepository.CreateAsync(sessionParticipant);
@@ -157,8 +158,8 @@ namespace Dhoojol.Application.Services.Sessions
         public async Task UpdateSession(UpdateSessionModel model)
         {
             var userId = _authService.GetUserId();
-            var session = await _sessionRepository.AsQueryable().Include(e => e.Coach.User).FirstOrDefaultAsync(e=>e.Id == model.Id);
-            if(session is null)
+            var session = await _sessionRepository.AsQueryable().Include(e => e.Coach.User).FirstOrDefaultAsync(e => e.Id == model.Id);
+            if (session is null)
             {
                 throw new Exception("Session not found");
             }
@@ -173,33 +174,28 @@ namespace Dhoojol.Application.Services.Sessions
             session.Description = model.Description;
             session.Tags = model.Tags;
 
-           await _sessionRepository.UpdateAsync(session);
+            await _sessionRepository.UpdateAsync(session);
         }
 
         public async Task DeleteSession(Guid id)
         {
-            try
-            {
-                await DeleteSessionParticipant(id);
-                await _sessionRepository.DeleteAsync(id);
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
+            await DeleteSessionParticipant(id);
+            await _sessionRepository.DeleteAsync(id);
         }
-        public async Task DeleteClientSessionParticipant(Guid id)
+
+        public async Task DeleteClientSessionParticipant(Guid clieintId)
         {
-            var queryList = await _sessionParticipantRepository.AsQueryable().Where(e => e.ClientId == id).ToListAsync();
-            foreach(var elem in queryList)
+            var queryList = await _sessionParticipantRepository.AsQueryable().Where(e => e.ClientId == clieintId).ToListAsync();
+            foreach (var elem in queryList)
             {
                 await _sessionParticipantRepository.DeleteAsync(elem.Id);
             }
         }
+
         public async Task DeleteSessionParticipant(Guid sessionId)
         {
-            var sessionParticipantList = await _sessionParticipantRepository.AsQueryable().Where(e=>e.SessionId == sessionId).ToListAsync();
-            foreach(var sessionParticipant in sessionParticipantList)
+            var sessionParticipantList = await _sessionParticipantRepository.AsQueryable().Where(e => e.SessionId == sessionId).ToListAsync();
+            foreach (var sessionParticipant in sessionParticipantList)
             {
                 await _sessionParticipantRepository.DeleteAsync(sessionParticipant.Id);
             }
