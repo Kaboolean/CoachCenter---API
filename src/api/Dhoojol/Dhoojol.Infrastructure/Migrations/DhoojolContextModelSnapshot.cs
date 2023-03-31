@@ -29,31 +29,37 @@ namespace Dhoojol.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Age")
+                        .HasMaxLength(100)
                         .HasColumnType("int");
 
                     b.Property<Guid?>("CoachId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Goal")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Handicap")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("Height")
+                        .HasMaxLength(250)
                         .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("Weight")
+                        .HasMaxLength(500)
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CoachId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Clients");
                 });
@@ -78,7 +84,8 @@ namespace Dhoojol.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Coaches");
                 });
@@ -188,8 +195,8 @@ namespace Dhoojol.Infrastructure.Migrations
                         .HasForeignKey("CoachId");
 
                     b.HasOne("Dhoojol.Domain.Entities.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Client")
+                        .HasForeignKey("Dhoojol.Domain.Entities.Clients.Client", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -201,8 +208,8 @@ namespace Dhoojol.Infrastructure.Migrations
             modelBuilder.Entity("Dhoojol.Domain.Entities.Coaches.Coach", b =>
                 {
                     b.HasOne("Dhoojol.Domain.Entities.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Coach")
+                        .HasForeignKey("Dhoojol.Domain.Entities.Coaches.Coach", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -252,6 +259,13 @@ namespace Dhoojol.Infrastructure.Migrations
             modelBuilder.Entity("Dhoojol.Domain.Entities.Sessions.Session", b =>
                 {
                     b.Navigation("Participants");
+                });
+
+            modelBuilder.Entity("Dhoojol.Domain.Entities.Users.User", b =>
+                {
+                    b.Navigation("Client");
+
+                    b.Navigation("Coach");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,6 +6,7 @@ namespace Dhoojol.Application.Services.Sessions
     public interface ISessionsService
     {
         Task<List<ListSessionModel>> GetAllAsync();
+        Task<List<ListSessionModel>> GetClientSessions();
         Task<GetSessionModel> GetById(Guid id);
         Task<List<ListSessionModel>> GetByCoachUserId(Guid coachUserId);
         Task<List<GetParticipantModel>> GetParticipants(Guid id);

@@ -118,9 +118,9 @@ namespace Dhoojol.Application.Services.Users
                 throw new Exception($"The username {model.UserName} already exists.");
             }
 
-            if (model.Password.Length < 3)
+            if (model.Password.Length < 6)
             {
-                throw new Exception($"The password must have 3 characters minimum.");
+                throw new Exception($"The password must have 6 characters minimum.");
             }
             if (model.UserType.ToLower() == UserType.Coach || model.UserType.ToLower() == UserType.Client)
             {

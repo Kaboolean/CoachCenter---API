@@ -14,7 +14,6 @@ public class User : Entity
     public DateTime? BirthDate { get; set; }
     public string Password { get; set; } = null!;
     public string UserType { get; set; } = null!;
-
     public Coach? Coach { get; set; }
     public Client? Client { get; set; }
 

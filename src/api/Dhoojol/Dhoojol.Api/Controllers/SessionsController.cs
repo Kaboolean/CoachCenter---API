@@ -26,18 +26,29 @@ namespace Dhoojol.Api.Controllers
             List<ListSessionModel> sessionList = await _sessionsService.GetAllAsync();
             return Ok(sessionList);
         }
+
+        [Authorize(Roles = "client")]
+        [HttpGet("client")]
+        public async Task<ActionResult<ApiResult<List<ListSessionModel>>>> GetClientSessions()
+        {
+            List<ListSessionModel> sessionList = await _sessionsService.GetClientSessions();
+            return Ok(sessionList);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResult<GetSessionModel>>> GetById(Guid id)
         {
             GetSessionModel session = await _sessionsService.GetById(id);
             return Ok(ApiResult.Success(session));
         }
+
         [HttpGet("{id}/coach")]
         public async Task<ActionResult<ApiResult<ListSessionModel>>> GetByCoachId([FromRoute] Guid id)
         {
             List<ListSessionModel> coachSessions = await _sessionsService.GetByCoachUserId(id);
             return Ok(ApiResult.Success(coachSessions));
         }
+
         [Authorize(Roles = "coach")]
         [HttpGet("{id}/participants")]
         public async Task<ActionResult<ApiResult<List<GetParticipantModel>>>> GetParticipants(Guid id)
@@ -52,6 +63,7 @@ namespace Dhoojol.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [Authorize(Roles = "client")]
         [HttpPost("{id}")]
         public async Task<ActionResult> JoinSession([FromRoute] Guid id)
@@ -73,6 +85,7 @@ namespace Dhoojol.Api.Controllers
             Guid sessionId = await _sessionsService.CreateSession(model);
             return Ok(ApiResult.Success(sessionId));
         }
+
         [Authorize(Roles = "coach")]
         [HttpPut]
         public async Task<ActionResult> UpdateSession(UpdateSessionModel model)

@@ -54,12 +54,12 @@ namespace Dhoojol.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Goal = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Age = table.Column<int>(type: "int", nullable: true),
-                    Height = table.Column<int>(type: "int", nullable: true),
-                    Weight = table.Column<int>(type: "int", nullable: true),
-                    Handicap = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Goal = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Age = table.Column<int>(type: "int", maxLength: 100, nullable: true),
+                    Height = table.Column<int>(type: "int", maxLength: 250, nullable: true),
+                    Weight = table.Column<int>(type: "int", maxLength: 500, nullable: true),
+                    Handicap = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
@@ -135,12 +135,14 @@ namespace Dhoojol.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Clients_UserId",
                 table: "Clients",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Coaches_UserId",
                 table: "Coaches",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sessions_CoachId",

@@ -1,5 +1,4 @@
-﻿using Dhoojol.Application.Models.Clients;
-using Dhoojol.Application.Models.Coaches;
+﻿using Dhoojol.Application.Models.Coaches;
 using Dhoojol.Application.Models.Sessions;
 using Dhoojol.Application.Models.Users;
 using Dhoojol.Application.Services.Auth;
@@ -10,8 +9,8 @@ using Dhoojol.Domain.Entities.Sessions;
 using Dhoojol.Infrastructure.EfCore.Repositories.Clients;
 using Dhoojol.Infrastructure.EfCore.Repositories.Coaches;
 using Dhoojol.Infrastructure.EfCore.Repositories.Sessions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Dhoojol.Application.Services.Sessions
 {
@@ -54,6 +53,41 @@ namespace Dhoojol.Application.Services.Sessions
             var sessions = await query.ToListAsync();
             return sessions;
         }
+
+        public async Task<List<ListSessionModel>> GetClientSessions()
+        {
+            Guid clientId = _authService.GetClientId();
+            var query = _sessionParticipantRepository.AsQueryable().Where(e => e.ClientId == clientId).Select(e => e.SessionId);
+
+            var sessionsIdList = await query.ToListAsync();
+
+            List<ListSessionModel> sessions = new List<ListSessionModel>();
+            foreach(var sessionId in sessionsIdList)
+            {
+                var querySession = _sessionRepository.AsQueryable().Where(e => e.Id == sessionId).Select(e => new ListSessionModel
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Date = e.Date,
+                    Location = e.Location,
+                    Duration = e.Duration,
+                    Description = e.Description,
+                    Tags = e.Tags,
+                    ParticipantCount = e.Participants.Count(),
+                    CoachId = e.Coach.Id,
+                    CoachFirstName = e.Coach.User.FirstName,
+                    CoachLastName = e.Coach.User.LastName,
+
+                }).FirstOrDefault();
+                if(querySession is null)
+                {
+                    break;
+                }
+                sessions.Add(querySession);  
+            }
+            return sessions;
+        }
+
         public async Task<GetSessionModel> GetById(Guid id)
         {
             var query = _sessionRepository.AsQueryable().Select(e => new GetSessionModel
@@ -113,6 +147,7 @@ namespace Dhoojol.Application.Services.Sessions
                 FirstName = e.Client.User.FirstName,
                 LastName = e.Client.User.LastName
             });
+            //controle si query = null
             var listParticipant = await query.ToListAsync();
             return listParticipant;
         }
@@ -183,9 +218,9 @@ namespace Dhoojol.Application.Services.Sessions
             await _sessionRepository.DeleteAsync(id);
         }
 
-        public async Task DeleteClientSessionParticipant(Guid clieintId)
+        public async Task DeleteClientSessionParticipant(Guid clientId)
         {
-            var queryList = await _sessionParticipantRepository.AsQueryable().Where(e => e.ClientId == clieintId).ToListAsync();
+            var queryList = await _sessionParticipantRepository.AsQueryable().Where(e => e.ClientId == clientId).ToListAsync();
             foreach (var elem in queryList)
             {
                 await _sessionParticipantRepository.DeleteAsync(elem.Id);
