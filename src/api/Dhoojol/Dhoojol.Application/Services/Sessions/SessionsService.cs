@@ -57,35 +57,24 @@ namespace Dhoojol.Application.Services.Sessions
         public async Task<List<ListSessionModel>> GetClientSessions()
         {
             Guid clientId = _authService.GetClientId();
-            var query = _sessionParticipantRepository.AsQueryable().Where(e => e.ClientId == clientId).Select(e => e.SessionId);
-
-            var sessionsIdList = await query.ToListAsync();
-
-            List<ListSessionModel> sessions = new List<ListSessionModel>();
-            foreach(var sessionId in sessionsIdList)
+            var query = _sessionParticipantRepository.AsQueryable().Where(e => e.ClientId == clientId).Select(e => new ListSessionModel
             {
-                var querySession = _sessionRepository.AsQueryable().Where(e => e.Id == sessionId).Select(e => new ListSessionModel
-                {
-                    Id = e.Id,
-                    Name = e.Name,
-                    Date = e.Date,
-                    Location = e.Location,
-                    Duration = e.Duration,
-                    Description = e.Description,
-                    Tags = e.Tags,
-                    ParticipantCount = e.Participants.Count(),
-                    CoachId = e.Coach.Id,
-                    CoachFirstName = e.Coach.User.FirstName,
-                    CoachLastName = e.Coach.User.LastName,
+                Id = e.Id,
+                Name = e.Session.Name,
+                Date = e.Session.Date,
+                Location = e.Session.Location,
+                Duration = e.Session.Duration,
+                Description = e.Session.Description,
+                Tags = e.Session.Tags,
+                ParticipantCount = e.Session.Participants.Count(),
+                CoachId = e.Session.Coach.Id,
+                CoachFirstName = e.Session.Coach.User.FirstName,
+                CoachLastName = e.Session.Coach.User.LastName,
 
-                }).FirstOrDefault();
-                if(querySession is null)
-                {
-                    break;
-                }
-                sessions.Add(querySession);  
-            }
-            return sessions;
+            });
+            var result = await query.ToListAsync();
+           
+            return result;
         }
 
         public async Task<GetSessionModel> GetById(Guid id)
