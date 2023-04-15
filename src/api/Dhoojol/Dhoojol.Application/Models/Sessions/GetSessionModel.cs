@@ -12,5 +12,6 @@ namespace Dhoojol.Application.Models.Sessions
         public string Description { get; set; } = null!;
         public GetCoachModel Coach { get; set; } = null!;
         public List<string> Tags { get; set; }
+        public int ParticipantCount { get; set; }
     }
 }

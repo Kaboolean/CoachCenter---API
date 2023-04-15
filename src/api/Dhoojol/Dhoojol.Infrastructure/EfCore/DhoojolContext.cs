@@ -1,5 +1,6 @@
 ﻿using Dhoojol.Domain.Entities.Clients;
 using Dhoojol.Domain.Entities.Coaches;
+using Dhoojol.Domain.Entities.ContactForms;
 using Dhoojol.Domain.Entities.Sessions;
 using Dhoojol.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ public class DhoojolContext : DbContext
     public DbSet<Coach> Coaches { get; set; }
     public DbSet<Session> Sessions { get; set; }
     public DbSet<SessionParticipant> SessionsParticipants{ get; set; }
+    public DbSet<ContactForm> ContactForms{ get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

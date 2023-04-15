@@ -9,5 +9,7 @@ namespace Dhoojol.Application.Services.Auth
         Guid GetCoachId();
         Guid GetClientId();
         string GetUserType();
+
+        bool IsAuthenticated();
     }
 }

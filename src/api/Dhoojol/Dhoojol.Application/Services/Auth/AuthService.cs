@@ -60,6 +60,19 @@ namespace Dhoojol.Application.Services.Auth
             var claim = context.User.Claims.FirstOrDefault(c => c.Type == claimType);
             return claim.Value;
         }
+
+        public bool IsAuthenticated()
+        {
+            HttpContext context = _httpContextAccessor.HttpContext;
+            if (context?.User?.Identities?.First().IsAuthenticated == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         public async Task<TokenResult> LoginAsync(LoginModel model)
         {
 

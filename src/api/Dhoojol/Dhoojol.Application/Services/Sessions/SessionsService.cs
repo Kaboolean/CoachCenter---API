@@ -88,6 +88,7 @@ namespace Dhoojol.Application.Services.Sessions
                 Duration = e.Duration,
                 Description = e.Description,
                 Tags = e.Tags,
+                ParticipantCount = e.Participants.Count(),
                 Coach = new GetCoachModel
                 {
                     UserId = e.Coach.User.Id,
@@ -182,7 +183,7 @@ namespace Dhoojol.Application.Services.Sessions
         public async Task UpdateSession(UpdateSessionModel model)
         {
             var userId = _authService.GetUserId();
-            var session = await _sessionRepository.AsQueryable().Include(e => e.Coach.User).FirstOrDefaultAsync(e => e.Id == model.Id);
+            var session = await _sessionRepository.AsQueryable().FirstOrDefaultAsync(e => e.Coach.User.Id == model.Id);
             if (session is null)
             {
                 throw new Exception("Session not found");

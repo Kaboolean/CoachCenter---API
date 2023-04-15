@@ -1,6 +1,7 @@
 ﻿using Dhoojol.Infrastructure.EfCore;
 using Dhoojol.Infrastructure.EfCore.Repositories.Clients;
 using Dhoojol.Infrastructure.EfCore.Repositories.Coaches;
+using Dhoojol.Infrastructure.EfCore.Repositories.ContactForms;
 using Dhoojol.Infrastructure.EfCore.Repositories.Sessions;
 using Dhoojol.Infrastructure.EfCore.Repositories.Users;
 using Dhoojol.Infrastructure.Seeds;
@@ -23,6 +24,7 @@ public static class InfrastructureIocExtensions
         services.AddScoped<ICoachRepository, CoachRepository>();
         services.AddScoped<ISessionRepository, SessionRepository>();
         services.AddScoped<ISessionParticipantRepository, SessionParticipantRepository>();
+        services.AddScoped<IContactFormRepository, ContactFormRepository>();
         services.AddScoped<UserSeeder>();
 
         return services;

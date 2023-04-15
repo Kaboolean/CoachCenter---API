@@ -117,6 +117,19 @@ namespace Dhoojol.Application.Services.Users
             {
                 throw new Exception($"The username {model.UserName} already exists.");
             }
+            if (model.UserName.Length < 5)
+            {
+                throw new Exception($"The username must be 5 characters minimum.");
+            }
+            if (model.UserName.Length > 25)
+            {
+                throw new Exception($"The username must be 25 characters maximum.");
+            }
+
+            if (String.IsNullOrEmpty(model.Email) || model.Email.Length > 100)
+            {
+                throw new Exception($"Wrong email format.");
+            }
 
             if (model.Password.Length < 6)
             {

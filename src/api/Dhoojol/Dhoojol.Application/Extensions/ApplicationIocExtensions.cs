@@ -1,6 +1,7 @@
 ﻿using Dhoojol.Application.Services.Auth;
 using Dhoojol.Application.Services.Clients;
 using Dhoojol.Application.Services.Coaches;
+using Dhoojol.Application.Services.ContactForms;
 using Dhoojol.Application.Services.Sessions;
 using Dhoojol.Application.Services.Users;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,7 @@ namespace Dhoojol.Application.Extensions
             services.AddScoped<IClientsService, ClientsService>();
             services.AddScoped<ICoachesService, CoachesService>();
             services.AddScoped<ISessionsService, SessionsService>();
+            services.AddScoped<IContactFormsService, ContactFormsService>();
             services.AddHttpContextAccessor();
 
             return services;
