@@ -111,7 +111,21 @@ namespace Dhoojol.Api.Controllers
                 await _sessionsService.DeleteSession(id);
                 return Ok();
             }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResult.Failed<Guid>(ex.Message));
+            }
+        }
 
+        [Authorize(Roles = "client")]
+        [HttpDelete("client/{id}")]
+        public async Task<IActionResult> LeaveSession([FromRoute] Guid id)
+        {
+            try
+            {
+                await _sessionsService.DeleteSessionParticipant(id);
+                return Ok();
+            }
             catch (Exception ex)
             {
                 return BadRequest(ApiResult.Failed<Guid>(ex.Message));

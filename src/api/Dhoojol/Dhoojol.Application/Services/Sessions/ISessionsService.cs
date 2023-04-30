@@ -15,7 +15,6 @@ namespace Dhoojol.Application.Services.Sessions
         Task UpdateSession(UpdateSessionModel model);
 
         Task DeleteSession(Guid id);
-
         Task DeleteClientSessionParticipant(Guid id);
         Task DeleteSessionParticipant(Guid sessionId);
     }

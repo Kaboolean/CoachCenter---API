@@ -16,7 +16,7 @@ namespace Dhoojol.Application.Services.Coaches
 
         public async Task<GetCoachModel> GetCoachByUserId(Guid id)
         {
-            var query = _coachRepository.AsQueryable().Select(e => new GetCoachModel
+            var coach = await _coachRepository.AsQueryable().Where(e => e.UserId == id).Select(e => new GetCoachModel
             {
                 Id = e.Id,
                 Grades = e.Grades,
@@ -27,8 +27,8 @@ namespace Dhoojol.Application.Services.Coaches
                 Email = e.User.Email,
                 FirstName = e.User.FirstName,
                 LastName = e.User.LastName,
-            });
-            var coach = await query.FirstOrDefaultAsync(e => e.UserId == id);
+            }).FirstOrDefaultAsync();
+            //var coach = await query.FirstOrDefaultAsync(e => e.UserId == id);
             if(coach == null)
             {
                 throw new Exception("Coach not found");

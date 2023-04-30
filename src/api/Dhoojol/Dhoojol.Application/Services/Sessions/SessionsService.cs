@@ -208,6 +208,7 @@ namespace Dhoojol.Application.Services.Sessions
             await _sessionRepository.DeleteAsync(id);
         }
 
+        //delete toutes les sessions d'un client
         public async Task DeleteClientSessionParticipant(Guid clientId)
         {
             var queryList = await _sessionParticipantRepository.AsQueryable().Where(e => e.ClientId == clientId).ToListAsync();
@@ -217,13 +218,10 @@ namespace Dhoojol.Application.Services.Sessions
             }
         }
 
+        //delete une participation à une session
         public async Task DeleteSessionParticipant(Guid sessionId)
         {
-            var sessionParticipantList = await _sessionParticipantRepository.AsQueryable().Where(e => e.SessionId == sessionId).ToListAsync();
-            foreach (var sessionParticipant in sessionParticipantList)
-            {
-                await _sessionParticipantRepository.DeleteAsync(sessionParticipant.Id);
-            }
+            await _sessionParticipantRepository.DeleteAsync(sessionId);
         }
     }
 }
